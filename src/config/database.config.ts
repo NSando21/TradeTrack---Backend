@@ -8,7 +8,7 @@ export const databaseConfig: TypeOrmModuleOptions = {
   password: process.env.DB_PASSWORD || 'Super-contraseña-segura-2025',
   database: process.env.DB_NAME || 'backend_pi',
   entities: [__dirname + '/../**/*.entity{.ts,.js}'],
-  synchronize: process.env.NODE_ENV !== 'DATABASE_URL',
-  logging: process.env.NODE_ENV !== 'DATABASE_URL',
-  ssl: process.env.NODE_ENV === 'DATABASE_URL' ? { rejectUnauthorized: false } : false,
+  synchronize: process.env.NODE_ENV !== 'production',
+  logging: process.env.NODE_ENV !== 'production',
+  ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
 }; 
