@@ -19,23 +19,8 @@ export class TripsController {
     return this.tripsService.findAll();
   }
 
-  //   @Get(":id")
-  //   findOne(@Param("id") id: string) {
-  //     return this.usersService.findOne(id);
-  //   }
-
   @Post()
   create(@Body() createTripDto: CreateTripDTO) {
     return this.tripsService.create(createTripDto);
   }
-
-  //   @Patch(":id")
-  //   update(@Param("id") id: string, @Body() updateUserDto: Partial<User>) {
-  //     return this.usersService.update(id, updateUserDto);
-  //   }
-
-  //   @Delete(":id")
-  //   remove(@Param("id") id: string) {
-  //     return this.usersService.remove(id);
-  //   }
 }
