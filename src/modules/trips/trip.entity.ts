@@ -2,9 +2,12 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
+  ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
+import { User } from "../users/user.entity";
 
 @Entity("trips")
 export class Trip {
@@ -28,4 +31,8 @@ export class Trip {
 
   @UpdateDateColumn()
   updatedAt: Date;
+
+  @ManyToOne(() => User, (user) => user.trips)
+  @JoinColumn({ name: "userId" })
+  user: User;
 }
