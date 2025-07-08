@@ -1,20 +1,30 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, CreateDateColumn } from 'typeorm';
-import { Provider } from '../Entities/provider.entity';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToOne,
+  CreateDateColumn,
+  JoinColumn,
+} from "typeorm";
+import { Provider } from "../Entities/provider.entity";
 
-@Entity('provider_pictures')
+@Entity("provider_pictures")
 export class ProviderPicture {
-  @PrimaryGeneratedColumn('uuid')
+  @PrimaryGeneratedColumn("uuid")
   id: string;
 
-  @Column()
+  @Column({ default: "No image" })
   url_foto: string;
 
-  @Column({ type: 'int', nullable: true })
+  @Column({ type: "int", nullable: true })
   order: number;
 
   @CreateDateColumn()
   created_at: Date;
 
-  @ManyToOne(() => Provider, provider => provider.pictures, { onDelete: 'CASCADE' })
+  @ManyToOne(() => Provider, (provider) => provider.pictures, {
+    onDelete: "CASCADE",
+  })
+  @JoinColumn({ name: "providerId" })
   provider: Provider;
 }
