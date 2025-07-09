@@ -1,39 +1,68 @@
-import {
-  Entity,
-  PrimaryGeneratedColumn,
-  Column,
-  CreateDateColumn,
-  UpdateDateColumn,
-  OneToMany,
-} from "typeorm";
-import { Trip } from "../trips/trip.entity";
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, OneToMany } from 'typeorm';
+import { Trip } from '../trips/trip.entity';
 
-@Entity("users")
+export enum DniType {
+  DNI = 'dni',
+  PASSPORT = 'passport',
+  CC = 'c.c',
+}
+
+export enum AuthProvider {
+  FACEBOOK = 'FB',
+  GOOGLE = 'google',
+  PASSWORD = 'pass',
+}
+
+export enum UserRole {
+  ADMIN = 'admin',
+  JEFE = 'jefe',
+  EMPLEADO = 'empleado',
+}
+
+@Entity('users')
 export class User {
-  @PrimaryGeneratedColumn("uuid")
+  @PrimaryGeneratedColumn('uuid')
   id: string;
 
+  @Column()
+  name: string;
+
+  @Column({
+    type: 'enum',
+    enum: DniType,
+  })
+  dni: DniType;
+
   @Column({ unique: true })
+  username: string;
+
+  @Column()
   email: string;
 
   @Column()
-  firstName: string;
-
-  @Column()
-  lastName: string;
-
-  @Column({ select: false })
   password: string;
 
-  @Column({ default: true })
-  isActive: boolean;
+  @Column({
+    type: 'enum',
+    enum: AuthProvider,
+  })
+  auth: AuthProvider;
 
-  @CreateDateColumn()
-  createdAt: Date;
+  @Column({
+    type: 'enum',
+    enum: UserRole,
+  })
+  rol: UserRole;
 
-  @UpdateDateColumn()
-  updatedAt: Date;
+  @Column({ default: false })
+  approved: boolean;
 
   @OneToMany(() => Trip, (trip) => trip.user)
   trips: Trip[];
+
+  @CreateDateColumn()
+  created_at: Date;
+
+  @UpdateDateColumn()
+  updated_at: Date;
 }
