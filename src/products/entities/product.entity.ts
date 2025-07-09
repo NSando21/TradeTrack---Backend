@@ -52,7 +52,7 @@ export class Product {
   })
   state: ProductState;
 
-  @Column({ default: false })
+  @Column({ default: true })
   desactivated: boolean;
 
   @CreateDateColumn()
