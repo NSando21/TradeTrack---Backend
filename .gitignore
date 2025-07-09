@@ -105,3 +105,4 @@ logs
 ehthumbs.db
 Thumbs.db
 .env
+.env.development
