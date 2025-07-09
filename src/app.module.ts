@@ -6,7 +6,7 @@ import { AppService } from "./app.service";
 import { UsersModule } from "./modules/users/users.module";
 import { databaseConfig } from "./config/database.config";
 import { TripsModule } from "./modules/trips/trips.module";
-import { ProductsModule } from './products/products.module';
+import { ProviderModule } from "./modules/providers/providers.module";
 
 @Module({
   imports: [
@@ -22,7 +22,7 @@ import { ProductsModule } from './products/products.module';
     // Módulos de la aplicación
     UsersModule,
     TripsModule,
-    ProductsModule,
+    ProviderModule,
   ],
   controllers: [AppController],
   providers: [AppService],
