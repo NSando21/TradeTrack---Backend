@@ -7,6 +7,6 @@ import { TripsService } from './trips.service';
 @Module({
   imports: [TypeOrmModule.forFeature([Trip])],
   controllers: [TripsController],
-  providers: [],
+  providers: [TripsService],
 })
 export class TripsModule {}
