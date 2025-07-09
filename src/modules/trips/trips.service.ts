@@ -54,6 +54,7 @@ export class TripsService {
 
     const newProvider = this.providersRepository.create({
       ...providerData,
+      phone_number: String(createProviderDto.phone_number), // Se tiene que asegurar que sea un string debido a que los numeros de teléfono pueden contener caracteres especiales como '+' o '-'
       trip: findTrip,
     });
 

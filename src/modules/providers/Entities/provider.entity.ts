@@ -26,7 +26,7 @@ export class Provider {
   wechat_contact: string;
 
   @Column({ type: "varchar", length: 20 })
-  phone_number: number;
+  phone_number: string;
 
   @Column({ type: "text" })
   address: string;
@@ -53,6 +53,9 @@ export class Provider {
     cascade: true,
   })
   pictures: ProviderPicture[];
+
+  @Column({ default: true })
+  is_active: boolean;
 
   @ManyToOne(() => Trip, (trip) => trip.providers)
   @JoinColumn({ name: "tripId" })
