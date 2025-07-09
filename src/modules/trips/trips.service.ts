@@ -11,6 +11,8 @@ import { CreateTripDTO } from "./dtos/trip.dto";
 import { Provider } from "../providers/Entities/provider.entity";
 import { CreateProviderDTO } from "../providers/dtos/create-provider.dto";
 import { ProviderPicture } from "../providers/Entities/provider-pictures.entity";
+import { CreateProductDto } from "@/products/dto/create-product.dto";
+import { Product } from "@/products/entities/product.entity";
 
 @Injectable()
 export class TripsService {
@@ -20,7 +22,9 @@ export class TripsService {
     @InjectRepository(Provider)
     private readonly providersRepository: Repository<Provider>,
     @InjectRepository(ProviderPicture)
-    private readonly providersPicturesRepository: Repository<ProviderPicture>
+    private readonly providersPicturesRepository: Repository<ProviderPicture>,
+    @InjectRepository(Product)
+    private readonly productsRepository: Repository<Product>
   ) {}
 
   async findAll(): Promise<Trip[]> {
@@ -39,8 +43,36 @@ export class TripsService {
     });
   }
 
-  async createProduct(id: string, createTripDto: CreateTripDTO) {
-    throw new Error("Method not implemented.");
+  async findAllProductsById(tripId: string) {
+    const findTrip = await this.tripsRepository.findOneBy({
+      id: tripId,
+    });
+
+    if (!findTrip) throw new NotFoundException("Trip not found");
+
+    return await this.productsRepository.find({
+      where: { trip: { id: tripId } },
+    });
+  }
+
+  async createProduct(id: string, createProductDto: CreateProductDto) {
+    const findTrip = await this.tripsRepository.findOneBy({
+      id: id,
+    });
+
+    if (!findTrip) throw new NotFoundException("Trip not found");
+
+    const newProduct = this.productsRepository.create({
+      ...createProductDto,
+      trip: findTrip,
+    });
+
+    await this.productsRepository.save(newProduct);
+
+    return await this.tripsRepository.findOne({
+      where: { id },
+      relations: { products: true },
+    });
   }
 
   async createProviders(id: string, createProviderDto: CreateProviderDTO) {
