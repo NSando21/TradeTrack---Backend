@@ -1,17 +1,18 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty } from "@nestjs/swagger";
 import {
   ArrayMinSize,
   IsArray,
   IsDateString,
   IsNotEmpty,
+  IsOptional,
   IsString,
   MinLength,
-} from 'class-validator';
+} from "class-validator";
 
 export class CreateTripDTO {
   @ApiProperty({
-    description: 'Nombre del viaje',
-    example: 'Viaje #1',
+    description: "Nombre del viaje",
+    example: "Viaje #1",
   })
   @IsNotEmpty()
   @IsString()
@@ -19,16 +20,16 @@ export class CreateTripDTO {
   name: string;
 
   @ApiProperty({
-    description: 'Fecha del viaje',
-    example: '2025-07-06',
+    description: "Fecha del viaje",
+    example: "2025-07-06",
   })
   @IsNotEmpty()
   @IsDateString()
   date: string;
 
   @ApiProperty({
-    description: 'Lista de nombres de los viajeros',
-    example: ['Pepito Torres', 'Juan Perez'],
+    description: "Lista de nombres de los viajeros",
+    example: ["Pepito Torres", "Juan Perez"],
   })
   @IsArray()
   @ArrayMinSize(1)
@@ -37,9 +38,10 @@ export class CreateTripDTO {
   travelers: string[];
 
   @ApiProperty({
-    description: 'Observacion del viaje',
-    example: 'Este viaje es para cotizar productos de China',
+    description: "Observacion del viaje",
+    example: "Este viaje es para cotizar productos de China",
   })
+  @IsOptional()
   @IsString()
-  observation: string;
+  observation?: string;
 }

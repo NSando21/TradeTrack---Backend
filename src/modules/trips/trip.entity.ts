@@ -4,10 +4,12 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
 import { User } from "../users/user.entity";
+import { Provider } from "../providers/Entities/provider.entity";
 
 @Entity("trips")
 export class Trip {
@@ -23,7 +25,7 @@ export class Trip {
   @Column("text", { array: true, nullable: false })
   travelers: string[];
 
-  @Column({ type: "text" })
+  @Column({ type: "text", default: "No obseervation" })
   observation: string;
 
   @CreateDateColumn()
@@ -35,4 +37,7 @@ export class Trip {
   @ManyToOne(() => User, (user) => user.trips)
   @JoinColumn({ name: "userId" })
   user: User;
+
+  @OneToMany(() => Provider, (provider) => provider.trip)
+  providers: Provider[];
 }

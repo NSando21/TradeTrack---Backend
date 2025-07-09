@@ -1,27 +1,37 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany, CreateDateColumn, UpdateDateColumn } from 'typeorm';
-import { ProviderPicture } from '../Entities/provider-pictures.entity';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  OneToMany,
+  CreateDateColumn,
+  UpdateDateColumn,
+  ManyToOne,
+  JoinColumn,
+} from "typeorm";
+import { ProviderPicture } from "../Entities/provider-pictures.entity";
+import { Trip } from "@/modules/trips/trip.entity";
 
-@Entity('providers')
+@Entity("providers")
 export class Provider {
-  @PrimaryGeneratedColumn('uuid')
+  @PrimaryGeneratedColumn("uuid")
   id: string;
 
-  @Column()
+  @Column({ type: "varchar", length: 50, nullable: false })
   name: string;
 
-  @Column({ nullable: true })
+  @Column({ type: "text", default: "No image" })
   main_picture: string;
 
   @Column({ nullable: true })
   wechat_contact: string;
 
-  @Column({ nullable: true })
-  phone_number: string;
+  @Column({ type: "varchar", length: 20 })
+  phone_number: number;
 
-  @Column({ nullable: true })
+  @Column({ type: "text" })
   address: string;
 
-  @Column({ nullable: true })
+  @Column({ type: "varchar", length: 50 })
   city: string;
 
   @Column({ nullable: true })
@@ -30,7 +40,7 @@ export class Provider {
   @Column({ nullable: true })
   master_genre: string;
 
-  @Column({ type: 'text', nullable: true })
+  @Column({ type: "text", nullable: true })
   observation: string;
 
   @CreateDateColumn()
@@ -39,7 +49,12 @@ export class Provider {
   @UpdateDateColumn()
   updated_at: Date;
 
-  @OneToMany(() => ProviderPicture, picture => picture.provider, { cascade: true })
+  @OneToMany(() => ProviderPicture, (picture) => picture.provider, {
+    cascade: true,
+  })
   pictures: ProviderPicture[];
-  
+
+  @ManyToOne(() => Trip, (trip) => trip.providers)
+  @JoinColumn({ name: "tripId" })
+  trip: Trip;
 }
