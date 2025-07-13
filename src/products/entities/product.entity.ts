@@ -60,8 +60,4 @@ export class Product {
 
   @UpdateDateColumn()
   updated_at: Date;
-
-  /// Modificado por Nico
-  @Column({ nullable: true })
-  trip: string; // Assuming this is a foreign key to a Trip entity, adjust
 }
