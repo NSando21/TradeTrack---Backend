@@ -55,11 +55,11 @@ export class CreateProviderDTO {
 
   @ApiProperty({
     description: "Numero celular del proveedor",
-    example: 545454,
+    example: "545454",
   })
   @IsNotEmpty()
-  @IsNumber()
-  phone_number: number;
+  @IsString()
+  phone_number: string;
 
   @ApiProperty({
     description: "Direccion del proveedor",

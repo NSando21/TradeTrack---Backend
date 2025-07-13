@@ -51,7 +51,8 @@ export class TripsService {
     if (!findTrip) throw new NotFoundException("Trip not found");
 
     return await this.productsRepository.find({
-      where: { trip: { id: tripId } },
+      // Modificado por Nico
+      where: { trip: tripId } ,
     });
   }
 
@@ -64,7 +65,8 @@ export class TripsService {
 
     const newProduct = this.productsRepository.create({
       ...createProductDto,
-      trip: findTrip,
+      // Modificado por Nico
+      trip: findTrip.id,
     });
 
     await this.productsRepository.save(newProduct);
