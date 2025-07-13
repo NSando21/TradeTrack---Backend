@@ -4,10 +4,11 @@ import {
   IsEnum,
   IsNotEmpty,
   IsNumber,
+  IsOptional,
   IsPositive,
   IsString,
 } from 'class-validator';
-import { Type } from 'class-transformer';
+import { Transform, Type } from 'class-transformer';
 
 
 export enum ProductState {
@@ -70,10 +71,12 @@ export class CreateProductDto {
   @IsNotEmpty()
   @IsBoolean()
   own_packaging: boolean;
-
-  @IsNotEmpty()
+  
+  @IsOptional()
   @IsEnum(ProductState)
-  state: ProductState;
+  @Transform(({ value }) => value === '' ? undefined : value)
+  state?: ProductState = ProductState.PENDING;
+  
 
   @IsNotEmpty()
   @IsBoolean()
