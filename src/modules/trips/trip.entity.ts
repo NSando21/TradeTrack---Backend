@@ -10,6 +10,7 @@ import {
 } from "typeorm";
 import { User } from "../users/user.entity";
 import { Provider } from "../providers/Entities/provider.entity";
+import { Product } from "@/products/entities/product.entity";
 
 @Entity("trips")
 export class Trip {
@@ -40,4 +41,7 @@ export class Trip {
 
   @OneToMany(() => Provider, (provider) => provider.trip)
   providers: Provider[];
+
+  @OneToMany(() => Product, (product) => product.trip)
+  products: Product[];
 }

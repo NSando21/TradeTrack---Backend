@@ -10,36 +10,71 @@ import {
 import { TripsService } from "./trips.service";
 import { CreateTripDTO } from "./dtos/trip.dto";
 import { CreateProviderDTO } from "../providers/dtos/create-provider.dto";
+import { CreateProductDto } from "@/products/dto/create-product.dto";
+import { ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 
+@ApiTags("Trips")
 @Controller("trips")
 export class TripsController {
   constructor(private readonly tripsService: TripsService) {}
 
   @Get()
-  findAll() {
-    return this.tripsService.findAll();
+  @ApiOperation({ summary: "Obtener todos los viajes" })
+  @ApiResponse({
+    description: "Todos los viajes listados correctamente",
+  })
+  async findAll() {
+    return await this.tripsService.findAll();
   }
 
   @Get(":tripId/providers")
-  findAllProvidersById(@Param("tripId") tripId: string) {
-    return this.tripsService.findAllProvidersById(tripId);
+  @ApiOperation({ summary: "Obtener todos los proveedores" })
+  @ApiResponse({
+    description: "Todos los proveedores listados correctamente",
+  })
+  async findAllProvidersById(@Param("tripId") tripId: string) {
+    return await this.tripsService.findAllProvidersById(tripId);
+  }
+
+  @Get(":tripId/products")
+  @ApiOperation({ summary: "Obtener todos los productos" })
+  @ApiResponse({
+    description: "Todos los productos listados correctamente",
+  })
+  async findAllProductsById(@Param("tripId") tripId: string) {
+    return await this.tripsService.findAllProductsById(tripId);
   }
 
   @Post(":tripId/products")
-  createProduct(@Param("id") id: string, @Body() createTripDto: CreateTripDTO) {
-    return this.tripsService.createProduct(id, createTripDto);
+  @ApiOperation({ summary: "Crear producto" })
+  @ApiResponse({
+    description: "Producto creado correctamente",
+  })
+  async createProduct(
+    @Param("id") id: string,
+    @Body() createProductDto: CreateProductDto
+  ) {
+    return await this.tripsService.createProduct(id, createProductDto);
   }
 
   @Post(":tripId/providers")
-  createProviders(
+  @ApiOperation({ summary: "Crear proveedor" })
+  @ApiResponse({
+    description: "Proveedor creado correctamente",
+  })
+  async createProviders(
     @Param("tripId") id: string,
     @Body() createProviderDto: CreateProviderDTO
   ) {
-    return this.tripsService.createProviders(id, createProviderDto);
+    return await this.tripsService.createProviders(id, createProviderDto);
   }
 
   @Post()
-  create(@Body() createTripDto: CreateTripDTO) {
-    return this.tripsService.create(createTripDto);
+  @ApiOperation({ summary: "Crear viaje" })
+  @ApiResponse({
+    description: "Viaje creado correctamente",
+  })
+  async create(@Body() createTripDto: CreateTripDTO) {
+    return await this.tripsService.create(createTripDto);
   }
 }
