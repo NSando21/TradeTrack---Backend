@@ -17,7 +17,26 @@ export enum ProductState {
   CANCELLED = 'cancelled',
 }
 
+export enum ProductCategory {
+  ELECTRODOMESTICOS = 'electrodomesticos',
+  TECNOLOGIA = 'tecnologia',
+  MUEBLES = 'muebles',
+  ROPA = 'ropa',
+  JUGUETES = 'juguetes',
+  HERRAMIENTAS = 'herramientas',
+  HOGAR = 'hogar',
+  DEPORTES = 'deportes',
+  LIBROS = 'libros',
+  BELLEZA = 'belleza',
+}
+
 export class CreateProductDto {
+
+  
+  @IsNotEmpty()
+  @IsEnum(ProductCategory)
+  categoryMaster: ProductCategory;
+
   @IsNotEmpty()
   @IsString()
   reference: string;

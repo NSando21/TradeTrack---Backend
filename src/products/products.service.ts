@@ -1,5 +1,5 @@
-import { Injectable } from '@nestjs/common';
-import { CreateProductDto } from './dto/create-product.dto';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { CreateProductDto, ProductState } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -18,19 +18,56 @@ export class ProductsService {
     return "Producto creado correctamente";
   }
 
-  findAll() {
-    return `This action returns all products`;
+  async findAllProductsService() : Promise<Product[]> {
+    const products = await this.productRepository.find({
+      where: {
+        desactivated: false,
+      },
+      relations: ['trip'],
+    });
+    return products;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} product`;
+  async findProductsByState(state?: ProductState) {
+    const whereClause: any = { desactivated: false };
+    if (state) {
+      whereClause.state = state;
+    }
+    console.log('Filtro aplicado:', whereClause);
+    return this.productRepository.find({ where: whereClause });
   }
+ 
+  async deactivateProduct(id: number) {
+    const product = await this.productRepository.findOne({ where: { id } });
+  
+    if (!product) {
+      throw new NotFoundException(`Producto con id ${id} no encontrado`);
+    }
+  
+    product.desactivated = true;
+    return this.productRepository.save(product);
+  }
+  
 
-  update(id: number, updateProductDto: UpdateProductDto) {
-    return `This action updates a #${id} product`;
-  }
+  
 
-  remove(id: number) {
-    return `This action removes a #${id} product`;
-  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }
