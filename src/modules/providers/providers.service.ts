@@ -5,26 +5,37 @@ import { Provider } from '../providers/Entities/provider.entity';
 import { CreateProviderDTO } from '../providers/dtos/create-provider.dto';
 import { ProviderPicture } from '../providers/Entities/provider-pictures.entity';
 import { ProviderPictureDTO } from '../providers/dtos/create-provider-picture.dto';
+import { Trip } from '../trips/trip.entity';
+
 
 @Injectable()
 export class ProvidersService {
   constructor(
+    @InjectRepository(Trip)
+    private readonly tripRepository: Repository<Trip>,
     @InjectRepository(Provider)
     private readonly providerRepository: Repository<Provider>,
     @InjectRepository(ProviderPicture)
     private readonly pictureRepository: Repository<ProviderPicture>,
   ) {}
-
   async create(createProviderDto: CreateProviderDTO): Promise<Provider> {
-    const { pictures, ...providerData } = createProviderDto; // Ensure phone number is a string
-    const provider = this.providerRepository.create({
-        ...providerData,
-        phone_number: String(createProviderDto.phone_number), // Ensure it's a string
-
+    const { pictures, tripId, ...providerData } = createProviderDto;
+  
+    // Buscá el viaje correspondiente
+    const trip = await this.tripRepository.findOne({ where: { id: tripId } });
+    if (!trip) {
+      throw new NotFoundException('Viaje no encontrado');
     }
-);
+  
+    // Crear el proveedor con la relación al viaje
+    const provider = this.providerRepository.create({
+      ...providerData,
+      phone_number: String(createProviderDto.phone_number),
+      trip,  // asociamos el viaje
+    });
+  
     await this.providerRepository.save(provider);
-
+  
     if (pictures && pictures.length > 0) {
       const pictureEntities = pictures.map((pic) =>
         this.pictureRepository.create({
@@ -37,10 +48,10 @@ export class ProvidersService {
     } else {
       provider.pictures = [];
     }
-
+  
     return provider;
   }
-
+  
   async findAll(): Promise<Provider[]> {
     return this.providerRepository.find({
       where: { is_active: true },

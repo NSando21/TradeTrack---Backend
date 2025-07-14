@@ -18,6 +18,15 @@ import { ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 export class TripsController {
   constructor(private readonly tripsService: TripsService) {}
 
+  @Get("/:id")
+  @ApiOperation({ summary: "Obtener viaje por id" })
+  @ApiResponse({
+    description: "Viaje obtenido correctamente",
+  })
+  async findById(@Param("id") id: string) {
+    return await this.tripsService.findById(id);
+  }
+
   @Get()
   @ApiOperation({ summary: "Obtener todos los viajes" })
   @ApiResponse({

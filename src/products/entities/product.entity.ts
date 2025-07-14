@@ -7,13 +7,16 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
-import { ProductState } from "../dto/create-product.dto";
+import { ProductCategory, ProductState } from "../dto/create-product.dto";
 import { Trip } from '../../modules/trips/trip.entity';
 
 @Entity()
 export class Product {
   @PrimaryGeneratedColumn()
   id: number;
+
+  @Column()
+  categoryMaster: ProductCategory;
 
   @Column()
   reference: string;
@@ -69,6 +72,9 @@ export class Product {
 
   @UpdateDateColumn()
   updated_at: Date;
+
+  @Column({ type: "uuid", nullable: true })
+  tripId: string;
 
   @ManyToOne(() => Trip, (trip) => trip.products, { nullable: true })
   @JoinColumn({ name: "tripId" })

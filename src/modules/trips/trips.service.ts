@@ -124,4 +124,13 @@ export class TripsService {
 
     return await this.tripsRepository.save(trip);
   }
+
+  async findById(id: string) {
+    const trip = await this.tripsRepository.findOne({
+      where: { id },
+      relations: { products: true, providers: true },
+    });
+    if (!trip) throw new NotFoundException("Trip not found");
+    return trip;
+  }
 }

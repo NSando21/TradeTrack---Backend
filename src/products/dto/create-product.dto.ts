@@ -4,10 +4,13 @@ import {
   IsEnum,
   IsNotEmpty,
   IsNumber,
+  IsOptional,
   IsPositive,
   IsString,
+  IsUUID,
 } from 'class-validator';
-import { Type } from 'class-transformer';
+import { Transform, Type } from 'class-transformer';
+import { ApiProperty } from '@nestjs/swagger';
 
 
 export enum ProductState {
@@ -16,7 +19,26 @@ export enum ProductState {
   CANCELLED = 'cancelled',
 }
 
+export enum ProductCategory {
+  ELECTRODOMESTICOS = 'electrodomesticos',
+  TECNOLOGIA = 'tecnologia',
+  MUEBLES = 'muebles',
+  ROPA = 'ropa',
+  JUGUETES = 'juguetes',
+  HERRAMIENTAS = 'herramientas',
+  HOGAR = 'hogar',
+  DEPORTES = 'deportes',
+  LIBROS = 'libros',
+  BELLEZA = 'belleza',
+}
+
 export class CreateProductDto {
+
+  
+  @IsNotEmpty()
+  @IsEnum(ProductCategory)
+  categoryMaster: ProductCategory;
+
   @IsNotEmpty()
   @IsString()
   reference: string;
@@ -70,13 +92,24 @@ export class CreateProductDto {
   @IsNotEmpty()
   @IsBoolean()
   own_packaging: boolean;
-
-  @IsNotEmpty()
+  
+  @IsOptional()
   @IsEnum(ProductState)
-  state: ProductState;
+  @Transform(({ value }) => value === '' ? undefined : value)
+  state?: ProductState = ProductState.PENDING;
+  
 
   @IsNotEmpty()
   @IsBoolean()
   desactivated: boolean;
+
+  
+@ApiProperty({
+  description: "ID del viaje asociado",
+  example: "a089d81c-4075-484c-b41a-2164521159be",
+})
+@IsUUID()
+tripId: string;
+
 }
 
