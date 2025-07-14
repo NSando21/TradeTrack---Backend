@@ -1,4 +1,4 @@
-import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { ProductCategory, ProductState } from "../dto/create-product.dto";
 import { Trip } from "@/modules/trips/trip.entity";
 
@@ -65,7 +65,11 @@ export class Product {
   @UpdateDateColumn()
   updated_at: Date;
 
+  @Column({ type: "uuid", nullable: true })
+  tripId: string;
+
   @ManyToOne(() => Trip, (trip) => trip.products)
+  @JoinColumn({ name: "tripId" })
   trip: Trip;
 
 }

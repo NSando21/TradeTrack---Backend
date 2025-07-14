@@ -4,19 +4,39 @@ import { UpdateProductDto } from './dto/update-product.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Product } from './entities/product.entity';
+import { Trip } from '@/modules/trips/trip.entity';
 
 @Injectable()
 export class ProductsService {
   constructor(
     @InjectRepository(Product)
     private productRepository: Repository<Product>,
+    @InjectRepository(Trip)
+    private tripRepository: Repository<Trip>,
   ) {}
 
   async newProductService(NewProduct: CreateProductDto) {
-    const newProduct = this.productRepository.create(NewProduct);
-    await this.productRepository.save(newProduct);
-    return "Producto creado correctamente";
+    try {
+      const trip = await this.tripRepository.findOne({ where: { id: NewProduct.tripId } });
+      if (!trip) {
+        throw new NotFoundException("Trip not found");
+      }
+  
+      const newProduct = this.productRepository.create({
+        ...NewProduct,
+        trip: trip,
+        tripId: trip.id,
+      });
+  
+      await this.productRepository.save(newProduct);
+      return "Producto creado correctamente";
+  
+    } catch (error) {
+      console.error("Error en newProductService:", error);
+      throw error; // para que llegue al controlador y se envíe el error al frontend
+    }
   }
+  
 
   async findAllProductsService() : Promise<Product[]> {
     const products = await this.productRepository.find({
