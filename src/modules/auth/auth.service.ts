@@ -27,7 +27,7 @@ export class AuthService {
     if (!user || !(await bcrypt.compare(loginDto.password, user.password))) {
       throw new UnauthorizedException('Credenciales inválidas');
     }
-    const payload = { sub: user.id, username: user.username, rol: user.rol };
+    const payload = { sub: user.id, username: user.username };
     const token = this.jwtService.sign(payload, { expiresIn: '300h' });
     return { access_token: token };
   }

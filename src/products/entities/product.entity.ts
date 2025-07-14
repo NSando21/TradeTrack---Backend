@@ -1,5 +1,6 @@
-import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn, ManyToOne } from "typeorm";
 import { ProductState } from "../dto/create-product.dto";
+import { Trip } from '../../modules/trips/trip.entity';
 
 @Entity()
 export class Product {
@@ -60,4 +61,7 @@ export class Product {
 
   @UpdateDateColumn()
   updated_at: Date;
+
+  @ManyToOne(() => Trip, (trip) => trip.products, { nullable: true })
+  trip: Trip;
 }

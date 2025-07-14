@@ -8,6 +8,7 @@ import { databaseConfig } from "./config/database.config";
 import { TripsModule } from "./modules/trips/trips.module";
 import { ProviderModule } from "./modules/providers/providers.module";
 import { ProductsModule } from "./products/products.module";
+import { AuthModule } from './modules/auth/auth.module';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { ProductsModule } from "./products/products.module";
     TripsModule,
     ProviderModule,
     ProductsModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],

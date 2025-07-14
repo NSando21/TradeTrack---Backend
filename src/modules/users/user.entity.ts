@@ -7,12 +7,6 @@ export enum DniType {
   CC = 'c.c',
 }
 
-export enum AuthProvider {
-  FACEBOOK = 'FB',
-  GOOGLE = 'google',
-  PASSWORD = 'pass',
-}
-
 export enum UserRole {
   ADMIN = 'admin',
   JEFE = 'jefe',
@@ -24,15 +18,6 @@ export class User {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column()
-  name: string;
-
-  @Column({
-    type: 'enum',
-    enum: DniType,
-  })
-  dni: DniType;
-
   @Column({ unique: true })
   username: string;
 
@@ -41,21 +26,6 @@ export class User {
 
   @Column()
   password: string;
-
-  @Column({
-    type: 'enum',
-    enum: AuthProvider,
-  })
-  auth: AuthProvider;
-
-  @Column({
-    type: 'enum',
-    enum: UserRole,
-  })
-  rol: UserRole;
-
-  @Column({ default: false })
-  approved: boolean;
 
   @OneToMany(() => Trip, (trip) => trip.user)
   trips: Trip[];
