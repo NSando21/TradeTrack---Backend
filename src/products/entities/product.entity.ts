@@ -1,4 +1,12 @@
-import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn, ManyToOne } from "typeorm";
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from "typeorm";
 import { ProductState } from "../dto/create-product.dto";
 import { Trip } from '../../modules/trips/trip.entity';
 
@@ -13,7 +21,7 @@ export class Product {
   @Column()
   name: string;
 
-  @Column('decimal')
+  @Column("decimal")
   price: number;
 
   @Column()
@@ -47,7 +55,7 @@ export class Product {
   own_packaging: boolean;
 
   @Column({
-    type: 'enum',
+    type: "enum",
     enum: ProductState,
     default: ProductState.PENDING,
   })
@@ -63,5 +71,6 @@ export class Product {
   updated_at: Date;
 
   @ManyToOne(() => Trip, (trip) => trip.products, { nullable: true })
+  @JoinColumn({ name: "tripId" })
   trip: Trip;
 }
