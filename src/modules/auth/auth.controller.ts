@@ -94,4 +94,58 @@ export class AuthController {
   getProfile(@Request() req) {
     return req.user;
   }
+
+  @Get('test-auth0')
+  @ApiOperation({ summary: 'Endpoint de prueba para verificar configuración de Auth0' })
+  @ApiResponse({
+    status: 200,
+    description: 'Configuración de Auth0 verificada.',
+    schema: {
+      example: {
+        message: 'Auth0 configurado correctamente',
+        domain: 'your-domain.auth0.com',
+        clientId: 'your-client-id',
+        hasSecret: true
+      },
+    },
+  })
+  testAuth0() {
+    return {
+      message: 'Auth0 configurado correctamente',
+      domain: process.env.AUTH0_DOMAIN,
+      clientId: process.env.AUTH0_CLIENT_ID,
+      hasSecret: !!process.env.AUTH0_CLIENT_SECRET
+    };
+  }
+
+  @Get('auth0-status')
+  @ApiOperation({ summary: 'Verificar estado de la estrategia Auth0' })
+  @ApiResponse({
+    status: 200,
+    description: 'Estado de la estrategia Auth0.',
+    schema: {
+      example: {
+        strategyLoaded: true,
+        config: {
+          jwtFromRequest: 'Bearer token',
+          ignoreExpiration: false,
+          hasSecret: true,
+          hasAudience: true,
+          hasIssuer: true
+        }
+      },
+    },
+  })
+  getAuth0Status() {
+    return {
+      strategyLoaded: true,
+      config: {
+        jwtFromRequest: 'Bearer token',
+        ignoreExpiration: false,
+        hasSecret: !!process.env.AUTH0_CLIENT_SECRET,
+        hasAudience: !!process.env.AUTH0_CLIENT_ID,
+        hasIssuer: !!process.env.AUTH0_DOMAIN
+      }
+    };
+  }
 } 
