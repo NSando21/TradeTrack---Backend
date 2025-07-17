@@ -4,12 +4,14 @@ import { UsersService } from '../users/users.service';
 import { RegisterUserDto } from './dto/register-user.dto';
 import { LoginUserDto } from './dto/login-user.dto';
 import * as bcrypt from 'bcryptjs';
+import { EmailService } from './email.service';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly usersService: UsersService,
     private readonly jwtService: JwtService,
+    private readonly emailService: EmailService,
   ) {}
 
   async register(registerDto: RegisterUserDto) {
@@ -19,6 +21,18 @@ export class AuthService {
     }
     const hashedPassword = await bcrypt.hash(registerDto.password, 10);
     const user = await this.usersService.create({ ...registerDto, password: hashedPassword });
+    
+    // Enviar email de bienvenida
+    try {
+      await this.emailService.sendWelcomeEmail({
+        username: user.username,
+        email: user.email,
+      });
+    } catch (error) {
+      console.error('Error enviando email de bienvenida:', error);
+      // No lanzamos error para no interrumpir el registro
+    }
+    
     return { message: 'Usuario registrado correctamente', user: { ...user, password: undefined } };
   }
 
@@ -29,6 +43,12 @@ export class AuthService {
     }
     const payload = { sub: user.id, username: user.username };
     const token = this.jwtService.sign(payload, { expiresIn: '300h' });
-    return { access_token: token };
+    
+    // Devolver todos los datos del usuario (sin la contraseña) junto con el token
+    const { password, ...userWithoutPassword } = user;
+    return { 
+      access_token: token,
+      user: userWithoutPassword
+    };
   }
 } 

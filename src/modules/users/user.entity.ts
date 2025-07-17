@@ -27,6 +27,9 @@ export class User {
   @Column()
   password: string;
 
+  @Column({ type: 'boolean', default: false })
+  admin: boolean;
+
   @OneToMany(() => Trip, (trip) => trip.user)
   trips: Trip[];
 
