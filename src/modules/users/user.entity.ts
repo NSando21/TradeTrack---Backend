@@ -30,6 +30,9 @@ export class User {
   @Column({ type: 'boolean', default: false })
   admin: boolean;
 
+  @Column({ type: 'boolean', default: true })
+  isActive: boolean;
+
   @OneToMany(() => Trip, (trip) => trip.user)
   trips: Trip[];
 

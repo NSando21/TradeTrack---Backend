@@ -44,6 +44,17 @@ export class AuthService {
     const payload = { sub: user.id, username: user.username };
     const token = this.jwtService.sign(payload, { expiresIn: '300h' });
     
+    // Enviar email de bienvenida en cada login exitoso
+    try {
+      await this.emailService.sendWelcomeEmail({
+        username: user.username,
+        email: user.email,
+      });
+    } catch (error) {
+      console.error('Error enviando email de bienvenida en login:', error);
+      // No lanzamos error para no interrumpir el login
+    }
+    
     // Devolver todos los datos del usuario (sin la contraseña) junto con el token
     const { password, ...userWithoutPassword } = user;
     return { 
