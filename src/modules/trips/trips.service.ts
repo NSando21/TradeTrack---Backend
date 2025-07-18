@@ -13,6 +13,7 @@ import { CreateProviderDTO } from "../providers/dtos/create-provider.dto";
 import { ProviderPicture } from "../providers/Entities/provider-pictures.entity";
 import { CreateProductDto } from "@/products/dto/create-product.dto";
 import { Product } from "@/products/entities/product.entity";
+import { User } from "../users/user.entity";
 
 @Injectable()
 export class TripsService {
@@ -23,12 +24,21 @@ export class TripsService {
     private readonly providersRepository: Repository<Provider>,
     @InjectRepository(ProviderPicture)
     private readonly providersPicturesRepository: Repository<ProviderPicture>,
+    @InjectRepository(User)
+    private readonly usersRepository: Repository<User>,
     @InjectRepository(Product)
     private readonly productsRepository: Repository<Product>
   ) {}
 
-  async findAll(): Promise<Trip[]> {
-    return this.tripsRepository.find();
+  async findAll(userId: string): Promise<Trip[]> {
+    const findUser = await this.usersRepository.findOneBy({
+      id: userId,
+    });
+
+    if (!findUser) throw new NotFoundException("User not found");
+    return await this.tripsRepository.find({
+      where: { user: { id: userId } },
+    });
   }
 
   async findAllProvidersById(tripId: string) {
@@ -55,9 +65,11 @@ export class TripsService {
     });
   }
 
-  async createProduct(id: string, createProductDto: CreateProductDto) {
+  async createProduct(tripId: string, createProductDto: CreateProductDto) {
+    console.log("Creating product for trip ID:", tripId);
+
     const findTrip = await this.tripsRepository.findOneBy({
-      id: id,
+      id: tripId,
     });
 
     if (!findTrip) throw new NotFoundException("Trip not found");
@@ -70,7 +82,7 @@ export class TripsService {
     await this.productsRepository.save(newProduct);
 
     return await this.tripsRepository.findOne({
-      where: { id },
+      where: { id: tripId },
       relations: { products: true },
     });
   }
@@ -82,11 +94,19 @@ export class TripsService {
 
     if (!findTrip) throw new NotFoundException("Trip not found");
 
+    const findNameProvider = await this.providersRepository.findOneBy({
+      name: createProviderDto.name,
+      trip: { id: id },
+    });
+
+    if (findNameProvider)
+      throw new BadRequestException("Already registered provider name");
+
     const { pictures, ...providerData } = createProviderDto;
 
     const newProvider = this.providersRepository.create({
       ...providerData,
-      phone_number: String(createProviderDto.phone_number), // Se tiene que asegurar que sea un string debido a que los numeros de teléfono pueden contener caracteres especiales como '+' o '-'
+      phone_number: String(createProviderDto.phone_number),
       trip: findTrip,
     });
 
@@ -109,28 +129,36 @@ export class TripsService {
     });
   }
 
-  async create(createTripDto: CreateTripDTO): Promise<Trip> {
+  async create(userId: string, createTripDto: CreateTripDTO): Promise<Trip> {
+    const findUser = await this.usersRepository.findOneBy({
+      id: userId,
+    });
+
+    if (!findUser) throw new NotFoundException("User not found");
+
     const findNameTrip = await this.tripsRepository.findOneBy({
       name: createTripDto.name,
+      user: { id: userId },
     });
 
     if (findNameTrip)
       throw new BadRequestException("Already registered trip name");
 
-    const trip = this.tripsRepository.create({
+    const trip = await this.tripsRepository.create({
       ...createTripDto,
       date: new Date(createTripDto.date),
+      user: findUser,
     });
 
     return await this.tripsRepository.save(trip);
   }
 
-  async findById(id: string) {
-    const trip = await this.tripsRepository.findOne({
-      where: { id },
-      relations: { products: true, providers: true },
-    });
-    if (!trip) throw new NotFoundException("Trip not found");
-    return trip;
-  }
+  // async findById(id: string) {
+  //   const trip = await this.tripsRepository.findOne({
+  //     where: { id },
+  //     relations: { products: true, providers: true },
+  //   });
+  //   if (!trip) throw new NotFoundException("Trip not found");
+  //   return trip;
+  // }
 }

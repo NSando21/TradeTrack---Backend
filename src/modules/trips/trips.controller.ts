@@ -6,34 +6,36 @@ import {
   Patch,
   Param,
   Delete,
+  UseGuards,
 } from "@nestjs/common";
 import { TripsService } from "./trips.service";
 import { CreateTripDTO } from "./dtos/trip.dto";
 import { CreateProviderDTO } from "../providers/dtos/create-provider.dto";
 import { CreateProductDto } from "@/products/dto/create-product.dto";
 import { ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
+import { AuthGuard } from "@nestjs/passport";
 
 @ApiTags("Trips")
 @Controller("trips")
 export class TripsController {
   constructor(private readonly tripsService: TripsService) {}
 
-  @Get("/:id")
-  @ApiOperation({ summary: "Obtener viaje por id" })
-  @ApiResponse({
-    description: "Viaje obtenido correctamente",
-  })
-  async findById(@Param("id") id: string) {
-    return await this.tripsService.findById(id);
-  }
+  // @Get("/:id")
+  // @ApiOperation({ summary: "Obtener viaje por id" })
+  // @ApiResponse({
+  //   description: "Viaje obtenido correctamente",
+  // })
+  // async findById(@Param("id") id: string) {
+  //   return await this.tripsService.findById(id);
+  // }
 
-  @Get()
+  @Get(":userId")
   @ApiOperation({ summary: "Obtener todos los viajes" })
   @ApiResponse({
     description: "Todos los viajes listados correctamente",
   })
-  async findAll() {
-    return await this.tripsService.findAll();
+  async findAll(@Param("userId") userId: string) {
+    return await this.tripsService.findAll(userId);
   }
 
   @Get(":tripId/providers")
@@ -60,10 +62,10 @@ export class TripsController {
     description: "Producto creado correctamente",
   })
   async createProduct(
-    @Param("id") id: string,
+    @Param("tripId") tripId: string,
     @Body() createProductDto: CreateProductDto
   ) {
-    return await this.tripsService.createProduct(id, createProductDto);
+    return await this.tripsService.createProduct(tripId, createProductDto);
   }
 
   @Post(":tripId/providers")
@@ -78,12 +80,15 @@ export class TripsController {
     return await this.tripsService.createProviders(id, createProviderDto);
   }
 
-  @Post()
+  @Post(":userId")
   @ApiOperation({ summary: "Crear viaje" })
   @ApiResponse({
     description: "Viaje creado correctamente",
   })
-  async create(@Body() createTripDto: CreateTripDTO) {
-    return await this.tripsService.create(createTripDto);
+  async create(
+    @Param("userId") userId: string,
+    @Body() createTripDto: CreateTripDTO
+  ) {
+    return await this.tripsService.create(userId, createTripDto);
   }
 }
