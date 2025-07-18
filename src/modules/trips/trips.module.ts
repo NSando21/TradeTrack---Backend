@@ -6,10 +6,11 @@ import { TripsService } from "./trips.service";
 import { Provider } from "../providers/Entities/provider.entity";
 import { ProviderPicture } from "../providers/Entities/provider-pictures.entity";
 import { Product } from "@/products/entities/product.entity";
+import { User } from "../users/user.entity";
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Trip, Provider, ProviderPicture, Product]),
+    TypeOrmModule.forFeature([Trip, Provider, ProviderPicture, Product, User]),
   ],
   controllers: [TripsController],
   providers: [TripsService],
