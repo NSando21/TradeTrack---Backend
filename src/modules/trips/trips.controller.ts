@@ -12,8 +12,14 @@ import { TripsService } from "./trips.service";
 import { CreateTripDTO } from "./dtos/trip.dto";
 import { CreateProviderDTO } from "../providers/dtos/create-provider.dto";
 import { CreateProductDto } from "@/products/dto/create-product.dto";
-import { ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from "@nestjs/swagger";
 import { AuthGuard } from "@nestjs/passport";
+import { MultiAuthGuard } from "../auth/multi-auth.guard";
 
 @ApiTags("Trips")
 @Controller("trips")
@@ -30,6 +36,9 @@ export class TripsController {
   // }
 
   @Get(":userId")
+  @UseGuards(MultiAuthGuard)
+  @ApiBearerAuth()
+  @UseGuards(MultiAuthGuard)
   @ApiOperation({ summary: "Obtener todos los viajes" })
   @ApiResponse({
     description: "Todos los viajes listados correctamente",
@@ -39,6 +48,8 @@ export class TripsController {
   }
 
   @Get(":tripId/providers")
+  @UseGuards(MultiAuthGuard)
+  @ApiBearerAuth()
   @ApiOperation({ summary: "Obtener todos los proveedores" })
   @ApiResponse({
     description: "Todos los proveedores listados correctamente",
@@ -48,6 +59,8 @@ export class TripsController {
   }
 
   @Get(":tripId/products")
+  @UseGuards(MultiAuthGuard)
+  @ApiBearerAuth()
   @ApiOperation({ summary: "Obtener todos los productos" })
   @ApiResponse({
     description: "Todos los productos listados correctamente",
@@ -57,6 +70,8 @@ export class TripsController {
   }
 
   @Post(":tripId/products")
+  @UseGuards(MultiAuthGuard)
+  @ApiBearerAuth()
   @ApiOperation({ summary: "Crear producto" })
   @ApiResponse({
     description: "Producto creado correctamente",
@@ -69,6 +84,8 @@ export class TripsController {
   }
 
   @Post(":tripId/providers")
+  @UseGuards(MultiAuthGuard)
+  @ApiBearerAuth()
   @ApiOperation({ summary: "Crear proveedor" })
   @ApiResponse({
     description: "Proveedor creado correctamente",
@@ -81,6 +98,8 @@ export class TripsController {
   }
 
   @Post(":userId")
+  @UseGuards(MultiAuthGuard)
+  @ApiBearerAuth()
   @ApiOperation({ summary: "Crear viaje" })
   @ApiResponse({
     description: "Viaje creado correctamente",
