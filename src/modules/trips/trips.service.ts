@@ -153,9 +153,9 @@ export class TripsService {
     return await this.tripsRepository.save(trip);
   }
 
-  async findById(id: string) {
+  async findById(tripId: string) {
     const trip = await this.tripsRepository.findOne({
-      where: { id },
+      where: { id: tripId },
       relations: { products: true, providers: true },
     });
     if (!trip) throw new NotFoundException("Trip not found");

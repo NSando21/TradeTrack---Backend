@@ -26,15 +26,15 @@ import { MultiAuthGuard } from "../auth/multi-auth.guard";
 export class TripsController {
   constructor(private readonly tripsService: TripsService) {}
 
-  @Get("/:id")
+  @Get(":tripId/trip")
   @UseGuards(MultiAuthGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: "Obtener viaje por id" })
   @ApiResponse({
     description: "Viaje obtenido correctamente",
   })
-  async findById(@Param("id") id: string) {
-    return await this.tripsService.findById(id);
+  async findById(@Param("tripId") tripId: string) {
+    return await this.tripsService.findById(tripId);
   }
 
   @Get(":userId")
