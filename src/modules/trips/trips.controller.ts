@@ -3,9 +3,7 @@ import {
   Get,
   Post,
   Body,
-  Patch,
   Param,
-  Delete,
   UseGuards,
   Put,
   Query,
@@ -20,8 +18,10 @@ import {
   ApiResponse,
   ApiTags,
 } from "@nestjs/swagger";
-import { AuthGuard } from "@nestjs/passport";
 import { MultiAuthGuard } from "../auth/multi-auth.guard";
+import { Roles } from "@/decorators/roles.decorator";
+import { Role } from "@/roles.enum";
+import { RolesGuard } from "../auth/roles.guard";
 
 @ApiTags("Trips")
 @Controller("trips")
@@ -51,7 +51,8 @@ export class TripsController {
   }
 
   @Get()
-  @UseGuards(MultiAuthGuard)
+  @Roles(Role.Admin)
+  @UseGuards(MultiAuthGuard, RolesGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: "Obtener todos los viajes" })
   @ApiResponse({
