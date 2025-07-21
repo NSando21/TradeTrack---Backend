@@ -41,6 +41,17 @@ export class TripsService {
     });
   }
 
+  async getTrips(page: number, limit: number): Promise<Trip[]> {
+    let trips = await this.tripsRepository.find();
+
+    const start = (page - 1) * limit;
+    const end = start + limit;
+
+    trips = trips.slice(start, end);
+
+    return trips;
+  }
+
   async findAllProvidersById(tripId: string) {
     const findTrip = await this.tripsRepository.findOneBy({
       id: tripId,
@@ -151,6 +162,23 @@ export class TripsService {
     });
 
     return await this.tripsRepository.save(trip);
+  }
+
+  async updateTrip(tripId: string, createTripDto: CreateTripDTO) {
+    const findTrip = await this.tripsRepository.findOneBy({
+      id: tripId,
+    });
+
+    if (!findTrip) throw new NotFoundException("Trip not found");
+
+    await this.tripsRepository.update(tripId, createTripDto);
+
+    return createTripDto;
+
+    // await this.tripsRepository.update(tripId, {
+    //   ...createTripDto,
+    //   date: new Date(createTripDto.date),
+    // });
   }
 
   async findById(tripId: string) {

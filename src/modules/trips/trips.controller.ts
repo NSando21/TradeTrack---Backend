@@ -7,6 +7,8 @@ import {
   Param,
   Delete,
   UseGuards,
+  Put,
+  Query,
 } from "@nestjs/common";
 import { TripsService } from "./trips.service";
 import { CreateTripDTO } from "./dtos/trip.dto";
@@ -29,7 +31,7 @@ export class TripsController {
   @Get(":tripId/trip")
   @UseGuards(MultiAuthGuard)
   @ApiBearerAuth()
-  @ApiOperation({ summary: "Obtener viaje por id" })
+  @ApiOperation({ summary: "Obtener viaje por ID del viaje" })
   @ApiResponse({
     description: "Viaje obtenido correctamente",
   })
@@ -40,13 +42,26 @@ export class TripsController {
   @Get(":userId")
   @UseGuards(MultiAuthGuard)
   @ApiBearerAuth()
-  @UseGuards(MultiAuthGuard)
-  @ApiOperation({ summary: "Obtener todos los viajes" })
+  @ApiOperation({ summary: "Obtener todos los viajes por ID del usuario" })
   @ApiResponse({
     description: "Todos los viajes listados correctamente",
   })
   async findAll(@Param("userId") userId: string) {
     return await this.tripsService.findAll(userId);
+  }
+
+  @Get()
+  @UseGuards(MultiAuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: "Obtener todos los viajes" })
+  @ApiResponse({
+    description: "Todos los viajes listados correctamente",
+  })
+  async getTrips(@Query("page") page: string, @Query("limit") limit: string) {
+    if (page && limit) {
+      return this.tripsService.getTrips(+page, +limit);
+    }
+    return this.tripsService.getTrips(1, 7);
   }
 
   @Get(":tripId/providers")
@@ -111,5 +126,19 @@ export class TripsController {
     @Body() createTripDto: CreateTripDTO
   ) {
     return await this.tripsService.create(userId, createTripDto);
+  }
+
+  @Put(":tripId")
+  @UseGuards(MultiAuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: "Modificar viaje" })
+  @ApiResponse({
+    description: "Viaje modificado correctamente",
+  })
+  async updateTrip(
+    @Param("tripId") tripId: string,
+    @Body() createTripDto: CreateTripDTO
+  ) {
+    return await this.tripsService.updateTrip(tripId, createTripDto);
   }
 }
