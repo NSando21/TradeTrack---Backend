@@ -39,8 +39,8 @@ export class ProductsController {
     status: 200,
     description: "Listado de productos obtenido correctamente.",
   })
-  @Get("/allProducts")
-  findAllProductsController() {
+  @Get()
+  async findAllProductsController() {
     return this.productsService.findAllProductsService();
   }
 

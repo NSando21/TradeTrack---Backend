@@ -8,11 +8,11 @@ import {
   UpdateDateColumn,
 } from "typeorm";
 import { ProductCategory, ProductState } from "../dto/create-product.dto";
-import { Trip } from '../../modules/trips/trip.entity';
+import { Trip } from "../../modules/trips/trip.entity";
 
 @Entity()
 export class Product {
-  @PrimaryGeneratedColumn('uuid')
+  @PrimaryGeneratedColumn("uuid")
   id: string;
 
   @Column()
@@ -64,7 +64,7 @@ export class Product {
   })
   state: ProductState;
 
-  @Column({ default: true })
+  @Column({ default: false })
   desactivated: boolean;
 
   @CreateDateColumn()
@@ -75,11 +75,11 @@ export class Product {
 
   @Column({ type: "uuid", nullable: true })
   tripId: string;
-//--------------------------------------
+  //--------------------------------------
   @Column({ default: true })
   is_active: boolean;
-//----------------------------------
-  @ManyToOne(() => Trip, (trip) => trip.products, { nullable: true })
+  //----------------------------------
+  @ManyToOne(() => Trip, (trip) => trip.products)
   @JoinColumn({ name: "tripId" })
   trip: Trip;
 }

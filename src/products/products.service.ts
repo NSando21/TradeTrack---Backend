@@ -39,15 +39,13 @@ export class ProductsService {
   }
   
 
-  async findAllProductsService() : Promise<Product[]> {
-    const products = await this.productRepository.find({
-      where: {
-        desactivated: false,
-      },
-      relations: ['trip'],
-    });
-    return products;
-  }
+  async findAllProductsService(): Promise<Product[]> {
+  return this.productRepository.find({
+    where: { desactivated: true },
+    relations: ['trip'],
+  });
+}
+  
 
   async findProductsByState(state?: ProductState) {
     const whereClause: any = { desactivated: false };
