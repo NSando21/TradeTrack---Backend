@@ -12,8 +12,8 @@ import { Trip } from '../../modules/trips/trip.entity';
 
 @Entity()
 export class Product {
-  @PrimaryGeneratedColumn()
-  id: number;
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
 
   @Column()
   categoryMaster: ProductCategory;
@@ -75,7 +75,10 @@ export class Product {
 
   @Column({ type: "uuid", nullable: true })
   tripId: string;
-
+//--------------------------------------
+  @Column({ default: true })
+  is_active: boolean;
+//----------------------------------
   @ManyToOne(() => Trip, (trip) => trip.products, { nullable: true })
   @JoinColumn({ name: "tripId" })
   trip: Trip;

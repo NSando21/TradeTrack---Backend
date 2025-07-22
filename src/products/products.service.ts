@@ -5,6 +5,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Product } from './entities/product.entity';
 import { Trip } from '@/modules/trips/trip.entity';
+import { UUID } from 'node:crypto';
 
 @Injectable()
 export class ProductsService {
@@ -57,7 +58,7 @@ export class ProductsService {
     return this.productRepository.find({ where: whereClause });
   }
  
-  async deactivateProduct(id: number) {
+  async deactivateProduct(id: string) {
     const product = await this.productRepository.findOne({ where: { id } });
   
     if (!product) {
@@ -67,27 +68,15 @@ export class ProductsService {
     product.desactivated = true;
     return this.productRepository.save(product);
   }
-  
-
-  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+//--------------------------------------------
+  async findOneBy(id: string): Promise<Product> {
+      const product = await this.productRepository.findOne({
+        where: { id, is_active: true },
+        relations: ['pictures'],
+      });
+      if (!product) throw new NotFoundException('Product not found');
+      return product;
+    }
+//---------------------------------------------
 
 }
