@@ -1,8 +1,13 @@
-import { Injectable, ExecutionContext, UnauthorizedException } from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
+import {
+  Injectable,
+  ExecutionContext,
+  UnauthorizedException,
+} from "@nestjs/common";
+import { AuthGuard } from "@nestjs/passport";
+import { Role } from "src/roles.enum";
 
 @Injectable()
-export class MultiAuthGuard extends AuthGuard(['jwt', 'auth0']) {
+export class MultiAuthGuard extends AuthGuard(["jwt", "auth0"]) {
   handleRequest(err, user, info, context) {
     const request = context.switchToHttp().getRequest();
     const token = request.headers.authorization?.replace('Bearer ', '');
@@ -20,32 +25,15 @@ export class MultiAuthGuard extends AuthGuard(['jwt', 'auth0']) {
 
     // Si alguna estrategia autenticó, permite el acceso
     if (user) {
-      console.log('✅ [MULTI-AUTH] Usuario autenticado:', user.sub || user.id);
+      if (user.isAdmin) {
+        user.roles = [Role.Admin];
+      } else {
+        user.roles = [Role.User];
+      }
+
       return user;
     }
-    
-    // Si ninguna autenticó, lanza error con información detallada
-    const errorMessage = err?.message || info?.message || 'No autorizado';
-    console.log('❌ [MULTI-AUTH] Error de autenticación:', errorMessage);
-    
-    // Log adicional para debugging
-    if (err) {
-      console.log('❌ [MULTI-AUTH] Error completo:', {
-        name: err.name,
-        message: err.message,
-        stack: err.stack?.split('\n').slice(0, 3) // Primeras 3 líneas del stack
-      });
-    }
-    
-    if (info) {
-      console.log('❌ [MULTI-AUTH] Info adicional:', {
-        name: info.name,
-        message: info.message,
-        type: info.constructor?.name
-      });
-    }
-    
-    // Siempre lanzar un UnauthorizedException en lugar del error original
-    throw new UnauthorizedException(errorMessage);
+    // Si ninguna autenticó, lanza error
+    throw err || new UnauthorizedException("No autorizado");
   }
-} 
+}
