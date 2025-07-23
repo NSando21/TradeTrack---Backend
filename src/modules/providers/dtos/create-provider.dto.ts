@@ -106,9 +106,13 @@ export class CreateProviderDTO {
   observation?: string;
 
   @ApiProperty({
-    description: 'ID del viaje al que pertenece el proveedor',
-    example: 'a089d81c-4075-484c-b41a-2164521159be',
+    description: "ID del viaje al que pertenece el proveedor",
+    example: "a089d81c-4075-484c-b41a-2164521159be",
   })
   @IsUUID()
   tripId: string;
+  //----------------------------------
+  @IsUUID()
+  @IsOptional()
+  userId: string;
 }

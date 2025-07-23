@@ -93,4 +93,11 @@ export class ProvidersService {
     await this.providerRepository.save(provider);
     return provider;
   }
+
+  //-----------------------------
+  async findProvidersByUser(userId: string): Promise<Provider[]> {
+      return this.providerRepository.find({
+        where: { userId },
+      });
+    }
 }

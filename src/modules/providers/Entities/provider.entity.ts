@@ -10,6 +10,7 @@ import {
 } from "typeorm";
 import { ProviderPicture } from "../Entities/provider-pictures.entity";
 import { Trip } from "@/modules/trips/trip.entity";
+import { User } from "@/modules/users/user.entity";
 
 @Entity("providers")
 export class Provider {
@@ -60,4 +61,12 @@ export class Provider {
   @ManyToOne(() => Trip, (trip) => trip.providers)
   @JoinColumn({ name: "tripId" })
   trip: Trip;
+
+  //--------------------------
+  @ManyToOne(() => User, user => user.providers)
+    @JoinColumn({ name: 'userId' })
+    user: User;
+  
+    @Column({ type: 'uuid', nullable: true })
+    userId: string;
 }

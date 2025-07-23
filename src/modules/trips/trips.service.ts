@@ -2,6 +2,7 @@ import {
   BadRequestException,
   Injectable,
   NotFoundException,
+  UnauthorizedException,
 } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
@@ -76,21 +77,33 @@ export class TripsService {
       where: { trip: { id: tripId } },
     });
   }
+  //-----------------------------------------------------------------------------------
+  async createProduct(
+    tripId: string,
+    createProductDto: CreateProductDto,
+    userId: string
+  ) {
+    console.log("📦 Trip ID:", tripId);
+    console.log("🧾 userId:", userId);
+    console.log("📥 DTO:", createProductDto);
+    console.log("Creating product for trip ID:", tripId, "by user:", userId);
 
-  async createProduct(tripId: string, createProductDto: CreateProductDto) {
-    console.log("Creating product for trip ID:", tripId);
+    if (!userId) {
+      console.warn("⚠️ userId no definido al guardar producto");
+      throw new UnauthorizedException(
+        "No se pudo determinar el usuario autenticado"
+      );
+    }
 
-    const findTrip = await this.tripsRepository.findOneBy({
-      id: tripId,
-    });
-
+    const findTrip = await this.tripsRepository.findOneBy({ id: tripId });
     if (!findTrip) throw new NotFoundException("Trip not found");
 
     const newProduct = this.productsRepository.create({
       ...createProductDto,
       trip: findTrip,
+      user: { id: userId }, // ← Vincula el producto con el usuario
     });
-
+    console.log("🛠 Producto a guardar:", newProduct);
     await this.productsRepository.save(newProduct);
 
     return await this.tripsRepository.findOne({
@@ -98,28 +111,33 @@ export class TripsService {
       relations: { products: true },
     });
   }
+  //----------------------------------------------------------------------------
+  async createProviders(
+    tripId: string,
+    createProviderDto: CreateProviderDTO,
+    userId: string
+  ) {
+    console.log("📦 Trip ID:", tripId);
+    console.log("🧾 userId:", userId);
 
-  async createProviders(id: string, createProviderDto: CreateProviderDTO) {
-    const findTrip = await this.tripsRepository.findOneBy({
-      id: id,
-    });
-
+    const findTrip = await this.tripsRepository.findOneBy({ id: tripId });
     if (!findTrip) throw new NotFoundException("Trip not found");
 
-    const findNameProvider = await this.providersRepository.findOneBy({
+    const existingProvider = await this.providersRepository.findOneBy({
       name: createProviderDto.name,
-      trip: { id: id },
+      trip: { id: tripId },
     });
-
-    if (findNameProvider)
+    if (existingProvider) {
       throw new BadRequestException("Already registered provider name");
+    }
 
     const { pictures, ...providerData } = createProviderDto;
 
     const newProvider = this.providersRepository.create({
       ...providerData,
-      phone_number: String(createProviderDto.phone_number),
+      phone_number: String(providerData.phone_number),
       trip: findTrip,
+      user: { id: userId }, // 👈 Asignamos el usuario
     });
 
     const savedProvider = await this.providersRepository.save(newProvider);
@@ -136,11 +154,12 @@ export class TripsService {
     }
 
     return await this.tripsRepository.findOne({
-      where: { id },
+      where: { id: tripId },
       relations: { providers: { pictures: true } },
     });
   }
 
+  //-----------------------------------------------------------------------------------------------
   async create(userId: string, createTripDto: CreateTripDTO): Promise<Trip> {
     const findUser = await this.usersRepository.findOneBy({
       id: userId,
@@ -208,4 +227,19 @@ export class TripsService {
     if (!trip) throw new NotFoundException("Trip not found");
     return trip;
   }
+
+  //---------------------
+  async findAllTripsService(): Promise<Trip[]> {
+  const trips = await this.tripsRepository
+    .createQueryBuilder("trip")
+    .leftJoin("trip.user", "user")
+    .select([
+      "trip",                  // 
+      "user.id",
+      "user.username",         // solo algunos campos del usuario
+    ])
+    .getMany();                // devuelve objetos con estructura anidada
+
+  return trips;
+}
 }
