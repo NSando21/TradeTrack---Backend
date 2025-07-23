@@ -31,6 +31,7 @@ import { MultiAuthGuard } from "../auth/multi-auth.guard";
 import { Roles } from "@/decorators/roles.decorator";
 import { Role } from "@/roles.enum";
 import { RolesGuard } from "../auth/roles.guard";
+import { UpdateTripDTO } from "./dtos/update-trip.dto";
 
 @ApiTags("Trips")
 @Controller("trips")
@@ -757,8 +758,8 @@ export class TripsController {
   })
   async updateTrip(
     @Param("tripId") tripId: string,
-    @Body() createTripDto: CreateTripDTO // Recomendado cambiar a UpdateTripDTO
+    @Body() updateTripDto: UpdateTripDTO
   ) {
-    return await this.tripsService.updateTrip(tripId, createTripDto);
+    return await this.tripsService.updateTrip(tripId, updateTripDto);
   }
 }

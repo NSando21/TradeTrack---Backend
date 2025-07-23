@@ -14,6 +14,7 @@ import { ProviderPicture } from "../providers/Entities/provider-pictures.entity"
 import { CreateProductDto } from "@/products/dto/create-product.dto";
 import { Product } from "@/products/entities/product.entity";
 import { User } from "../users/user.entity";
+import { UpdateTripDTO } from "./dtos/update-trip.dto";
 
 @Injectable()
 export class TripsService {
@@ -164,21 +165,39 @@ export class TripsService {
     return await this.tripsRepository.save(trip);
   }
 
-  async updateTrip(tripId: string, createTripDto: CreateTripDTO) {
-    const findTrip = await this.tripsRepository.findOneBy({
-      id: tripId,
+  async updateTrip(tripId: string, updateTripDto: UpdateTripDTO) {
+    const findTrip = await this.tripsRepository.findOne({
+      where: { id: tripId },
+      relations: ["user"],
     });
 
     if (!findTrip) throw new NotFoundException("Trip not found");
 
-    await this.tripsRepository.update(tripId, createTripDto);
+    if (updateTripDto.name && updateTripDto.name !== findTrip.name) {
+      const existingTrip = await this.tripsRepository.findOne({
+        where: {
+          name: updateTripDto.name,
+          user: { id: findTrip.user.id },
+        },
+      });
 
-    return createTripDto;
+      if (existingTrip) {
+        throw new BadRequestException("Trip name already exists for this user");
+      }
+    }
 
-    // await this.tripsRepository.update(tripId, {
-    //   ...createTripDto,
-    //   date: new Date(createTripDto.date),
-    // });
+    const updatedTrip = {
+      ...findTrip,
+      ...updateTripDto,
+      date: updateTripDto.date ? new Date(updateTripDto.date) : findTrip.date,
+      updatedAt: new Date(),
+    };
+
+    await this.tripsRepository.update(tripId, updatedTrip);
+
+    return this.tripsRepository.findOneBy({
+      id: tripId,
+    });
   }
 
   async findById(tripId: string) {
