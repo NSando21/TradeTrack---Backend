@@ -234,7 +234,7 @@ export class TripsService {
     .createQueryBuilder("trip")
     .leftJoin("trip.user", "user")
     .select([
-      "trip",                  // todos los campos de trip
+      "trip",                  // 
       "user.id",
       "user.username",         // solo algunos campos del usuario
     ])
