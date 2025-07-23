@@ -1,5 +1,7 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, OneToMany } from 'typeorm';
 import { Trip } from '../trips/trip.entity';
+import { Product } from '@/products/entities/product.entity';
+import { Provider } from '../providers/Entities/provider.entity';
 
 export enum DniType {
   DNI = 'dni',
@@ -41,4 +43,10 @@ export class User {
 
   @UpdateDateColumn()
   updated_at: Date;
+//-----------------------------------------------------------------------------------------------------------------
+  @OneToMany(() => Product, (product) => product.user)
+  products: Product[];
+
+  @OneToMany(() => Provider, (prov) => prov.user)
+  providers: Provider[];
 }

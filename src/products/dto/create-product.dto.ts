@@ -8,33 +8,30 @@ import {
   IsPositive,
   IsString,
   IsUUID,
-} from 'class-validator';
-import { Transform, Type } from 'class-transformer';
-import { ApiProperty } from '@nestjs/swagger';
-
+} from "class-validator";
+import { Transform, Type } from "class-transformer";
+import { ApiProperty } from "@nestjs/swagger";
 
 export enum ProductState {
-  PENDING = 'pending',
-  APPROVED = 'approved',
-  CANCELLED = 'cancelled',
+  PENDING = "pending",
+  APPROVED = "approved",
+  CANCELLED = "cancelled",
 }
 
 export enum ProductCategory {
-  ELECTRODOMESTICOS = 'electrodomesticos',
-  TECNOLOGIA = 'tecnologia',
-  MUEBLES = 'muebles',
-  ROPA = 'ropa',
-  JUGUETES = 'juguetes',
-  HERRAMIENTAS = 'herramientas',
-  HOGAR = 'hogar',
-  DEPORTES = 'deportes',
-  LIBROS = 'libros',
-  BELLEZA = 'belleza',
+  ELECTRODOMESTICOS = "electrodomesticos",
+  TECNOLOGIA = "tecnologia",
+  MUEBLES = "muebles",
+  ROPA = "ropa",
+  JUGUETES = "juguetes",
+  HERRAMIENTAS = "herramientas",
+  HOGAR = "hogar",
+  DEPORTES = "deportes",
+  LIBROS = "libros",
+  BELLEZA = "belleza",
 }
 
 export class CreateProductDto {
-
-  
   @IsNotEmpty()
   @IsEnum(ProductCategory)
   categoryMaster: ProductCategory;
@@ -92,24 +89,24 @@ export class CreateProductDto {
   @IsNotEmpty()
   @IsBoolean()
   own_packaging: boolean;
-  
+
   @IsOptional()
   @IsEnum(ProductState)
-  @Transform(({ value }) => value === '' ? undefined : value)
+  @Transform(({ value }) => (value === "" ? undefined : value))
   state?: ProductState = ProductState.PENDING;
-  
 
   @IsNotEmpty()
   @IsBoolean()
   desactivated: boolean;
 
-  
-@ApiProperty({
-  description: "ID del viaje asociado",
-  example: "a089d81c-4075-484c-b41a-2164521159be",
-})
-@IsUUID()
-tripId: string;
-
+  @ApiProperty({
+    description: "ID del viaje asociado",
+    example: "a089d81c-4075-484c-b41a-2164521159be",
+  })
+  @IsUUID()
+  tripId: string;
+//---------------------------------------
+  @IsUUID()
+  @IsOptional()
+  userId: string;
 }
-

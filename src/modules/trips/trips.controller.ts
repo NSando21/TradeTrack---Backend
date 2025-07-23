@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   UseGuards,
+  Req,
 } from "@nestjs/common";
 import { TripsService } from "./trips.service";
 import { CreateTripDTO } from "./dtos/trip.dto";
@@ -41,7 +42,7 @@ export class TripsController {
   @UseGuards(MultiAuthGuard)
   @ApiBearerAuth()
   @UseGuards(MultiAuthGuard)
-  @ApiOperation({ summary: "Obtener todos los viajes" })
+  @ApiOperation({ summary: "Obtener todos los viajes de un usuario" })
   @ApiResponse({
     description: "Todos los viajes listados correctamente",
   })
@@ -70,35 +71,43 @@ export class TripsController {
   async findAllProductsById(@Param("tripId") tripId: string) {
     return await this.tripsService.findAllProductsById(tripId);
   }
-
+  //-------------------------------------------
   @Post(":tripId/products")
   @UseGuards(MultiAuthGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: "Crear producto" })
-  @ApiResponse({
-    description: "Producto creado correctamente",
-  })
+  @ApiResponse({ description: "Producto creado correctamente" })
   async createProduct(
     @Param("tripId") tripId: string,
-    @Body() createProductDto: CreateProductDto
+    @Body() createProductDto: CreateProductDto,
+    @Req() req: any
   ) {
-    return await this.tripsService.createProduct(tripId, createProductDto);
-  }
+    const userId = req.user?.userId;
+    console.log("🧾 userId recibido del token:", userId);
 
+    return this.tripsService.createProduct(tripId, createProductDto, userId);
+  }
+  //---------------------------------------------------
   @Post(":tripId/providers")
   @UseGuards(MultiAuthGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: "Crear proveedor" })
-  @ApiResponse({
-    description: "Proveedor creado correctamente",
-  })
-  async createProviders(
-    @Param("tripId") id: string,
-    @Body() createProviderDto: CreateProviderDTO
+  @ApiResponse({ description: "Proveedor creado correctamente" })
+  async createProvider(
+    @Param("tripId") tripId: string,
+    @Body() createProviderDto: CreateProviderDTO,
+    @Req() req: any
   ) {
-    return await this.tripsService.createProviders(id, createProviderDto);
+    const userId = req.user?.userId;
+    console.log("🧾 userId desde token:", userId);
+    return await this.tripsService.createProviders(
+      tripId,
+      createProviderDto,
+      userId
+    );
   }
 
+  //--------------------------------------------------------------------------------------------
   @Post(":userId")
   @UseGuards(MultiAuthGuard)
   @ApiBearerAuth()
@@ -111,5 +120,19 @@ export class TripsController {
     @Body() createTripDto: CreateTripDTO
   ) {
     return await this.tripsService.create(userId, createTripDto);
+  }
+//--------------------------------------------------------------------------------------------
+  @ApiOperation({
+    summary: "Obtiene todos los viajes",
+    description: "Devuelve la lista completa de viajes.",
+  })
+  @ApiResponse({
+    status: 200,
+    description: "Listado de viajes obtenido correctamente.",
+  })
+
+  @Get()
+  async findAlltripsController() {
+    return this.tripsService.findAllTripsService();
   }
 }
