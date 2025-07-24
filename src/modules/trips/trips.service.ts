@@ -12,7 +12,7 @@ import { Provider } from "../providers/Entities/provider.entity";
 import { CreateProviderDTO } from "../providers/dtos/create-provider.dto";
 import { ProviderPicture } from "../providers/Entities/provider-pictures.entity";
 import { CreateProductDto } from "@/products/dto/create-product.dto";
-import { Product } from "@/products/entities/product.entity";
+import { Product } from "../../products/entities/product.entity";
 import { User } from "../users/user.entity";
 
 @Injectable()

@@ -10,6 +10,7 @@ import { mailConfig } from "./config/mail.config";
 import { TripsModule } from "./modules/trips/trips.module";
 import { ProviderModule } from "./modules/providers/providers.module";
 import { ProductsModule } from "./products/products.module";
+import { PaymentsModule } from "./modules/payments/payments.module";
 import { AuthModule } from './modules/auth/auth.module';
 
 @Module({
@@ -32,6 +33,7 @@ import { AuthModule } from './modules/auth/auth.module';
     ProviderModule,
     ProductsModule,
     AuthModule,
+    PaymentsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
