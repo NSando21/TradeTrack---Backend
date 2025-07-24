@@ -32,69 +32,133 @@ export enum ProductCategory {
 }
 
 export class CreateProductDto {
+  @ApiProperty({
+    description: "Categoria del producto",
+    example: "electrodomesticos",
+  })
   @IsNotEmpty()
   @IsEnum(ProductCategory)
   categoryMaster: ProductCategory;
 
+  @ApiProperty({
+    description: "Referencia del producto",
+    example: "REF12345",
+  })
   @IsNotEmpty()
   @IsString()
   reference: string;
 
+  @ApiProperty({
+    description: "Nombre del producto",
+    example: "Televisor 4K",
+  })
   @IsNotEmpty()
   @IsString()
   name: string;
 
+  @ApiProperty({
+    description: "Precio del producto",
+    example: "1000.00",
+  })
   @IsNotEmpty()
   @IsNumber()
   @IsPositive()
   price: number;
 
+  @ApiProperty({
+    description: "Cantidad del producto",
+    example: "10",
+  })
   @IsNotEmpty()
   @IsNumber()
   cuantity: number;
 
+  @ApiProperty({
+    description: "Color del producto",
+    example: "Rojo",
+  })
   @IsNotEmpty()
   @IsString()
   color: string;
 
+  @ApiProperty({
+    description: "Peso del producto",
+    example: "1",
+  })
   @IsNotEmpty()
   @IsNumber()
   height: number;
 
+  @ApiProperty({
+    description: "Ancho del producto",
+    example: "5",
+  })
   @IsNotEmpty()
   @IsNumber()
   width: number;
 
+  @ApiProperty({
+    description: "Profundidad del producto",
+    example: "3",
+  })
   @IsNotEmpty()
   @IsNumber()
   depth: number;
 
+  @ApiProperty({
+    description: "Fecha de fabricacion del producto",
+    example: "2023-10-01",
+  })
   @IsNotEmpty()
   @Type(() => Date)
   @IsDate()
   manufacturing_date: Date;
 
+  @ApiProperty({
+    description: "cantidad por caja del producto",
+    example: "10",
+  })
   @IsNotEmpty()
   @IsNumber()
   quantity_per_box: number;
 
+  @ApiProperty({
+    description: "Cantidad total por caja del producto",
+    example: "500",
+  })
   @IsNotEmpty()
   @IsNumber()
   total_quantity_per_box: number;
 
+  @ApiProperty({
+    description: "Cantidad total del producto",
+    example: "1000",
+  })
   @IsNotEmpty()
   @IsNumber()
   total_quantity: number;
 
+  @ApiProperty({
+    description: "¿El producto tiene empaque propio?",
+    example: "true",
+  })
   @IsNotEmpty()
   @IsBoolean()
   own_packaging: boolean;
 
+  @ApiProperty({
+    description: "state del producto",
+    example: "pending",
+  })
   @IsOptional()
   @IsEnum(ProductState)
   @Transform(({ value }) => (value === "" ? undefined : value))
   state?: ProductState = ProductState.PENDING;
 
+  @ApiProperty({
+    description: "¿El producto esta desactivado?",
+    example: "false",
+  })
   @IsNotEmpty()
   @IsBoolean()
   desactivated: boolean;
@@ -105,7 +169,7 @@ export class CreateProductDto {
   })
   @IsUUID()
   tripId: string;
-//---------------------------------------
+  //---------------------------------------
   @IsUUID()
   @IsOptional()
   userId: string;
