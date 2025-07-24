@@ -77,25 +77,20 @@ export class TripsService {
       where: { trip: { id: tripId } },
     });
   }
-  //-----------------------------------------------------------------------------------
+
   async createProduct(
     tripId: string,
     createProductDto: CreateProductDto,
     userId: string
   ) {
-    console.log("📦 Trip ID:", tripId);
-    console.log("🧾 userId:", userId);
-    console.log("📥 DTO:", createProductDto);
-    console.log("Creating product for trip ID:", tripId, "by user:", userId);
-
     if (!userId) {
-      console.warn("⚠️ userId no definido al guardar producto");
       throw new UnauthorizedException(
-        "No se pudo determinar el usuario autenticado"
+        "The authenticated user could not be determined"
       );
     }
 
     const findTrip = await this.tripsRepository.findOneBy({ id: tripId });
+
     if (!findTrip) throw new NotFoundException("Trip not found");
 
     const newProduct = this.productsRepository.create({
@@ -103,7 +98,7 @@ export class TripsService {
       trip: findTrip,
       user: { id: userId }, // ← Vincula el producto con el usuario
     });
-    console.log("🛠 Producto a guardar:", newProduct);
+
     await this.productsRepository.save(newProduct);
 
     return await this.tripsRepository.findOne({
@@ -111,33 +106,33 @@ export class TripsService {
       relations: { products: true },
     });
   }
-  //----------------------------------------------------------------------------
+
   async createProviders(
     tripId: string,
     createProviderDto: CreateProviderDTO,
     userId: string
   ) {
-    console.log("📦 Trip ID:", tripId);
-    console.log("🧾 userId:", userId);
+    const findTrip = await this.tripsRepository.findOneBy({
+      id: tripId,
+    });
 
-    const findTrip = await this.tripsRepository.findOneBy({ id: tripId });
     if (!findTrip) throw new NotFoundException("Trip not found");
 
-    const existingProvider = await this.providersRepository.findOneBy({
+    const findNameProvider = await this.providersRepository.findOneBy({
       name: createProviderDto.name,
       trip: { id: tripId },
     });
-    if (existingProvider) {
+
+    if (findNameProvider)
       throw new BadRequestException("Already registered provider name");
-    }
 
     const { pictures, ...providerData } = createProviderDto;
 
     const newProvider = this.providersRepository.create({
       ...providerData,
-      phone_number: String(providerData.phone_number),
+      phone_number: String(createProviderDto.phone_number),
       trip: findTrip,
-      user: { id: userId }, // 👈 Asignamos el usuario
+      user: { id: userId },
     });
 
     const savedProvider = await this.providersRepository.save(newProvider);
@@ -159,7 +154,6 @@ export class TripsService {
     });
   }
 
-  //-----------------------------------------------------------------------------------------------
   async create(userId: string, createTripDto: CreateTripDTO): Promise<Trip> {
     const findUser = await this.usersRepository.findOneBy({
       id: userId,
@@ -227,19 +221,4 @@ export class TripsService {
     if (!trip) throw new NotFoundException("Trip not found");
     return trip;
   }
-
-  //---------------------
-  async findAllTripsService(): Promise<Trip[]> {
-  const trips = await this.tripsRepository
-    .createQueryBuilder("trip")
-    .leftJoin("trip.user", "user")
-    .select([
-      "trip",                  // 
-      "user.id",
-      "user.username",         // solo algunos campos del usuario
-    ])
-    .getMany();                // devuelve objetos con estructura anidada
-
-  return trips;
-}
 }

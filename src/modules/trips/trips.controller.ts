@@ -5,6 +5,8 @@ import {
   Body,
   Param,
   UseGuards,
+  Put,
+  Query,
   Req,
 } from "@nestjs/common";
 import { TripsService } from "./trips.service";
@@ -85,9 +87,16 @@ export class TripsController {
   @Get(":userId")
   @UseGuards(MultiAuthGuard)
   @ApiBearerAuth()
-  @UseGuards(MultiAuthGuard)
-  @ApiOperation({ summary: "Obtener todos los viajes de un usuario" })
-  @ApiResponse({
+  @ApiOperation({
+    summary: "Obtener todos los viajes por ID del usuario",
+    description: "Recupera todos los viajes asociados a un usuario específico.",
+  })
+  @ApiParam({
+    name: "userId",
+    description: "ID único del usuario cuyos viajes se quieren recuperar",
+    type: "string",
+  })
+  @ApiOkResponse({
     description: "Todos los viajes listados correctamente",
     schema: {
       example: {
@@ -344,35 +353,231 @@ export class TripsController {
   async findAllProductsById(@Param("tripId") tripId: string) {
     return await this.tripsService.findAllProductsById(tripId);
   }
-  //-------------------------------------------
+
   @Post(":tripId/products")
   @UseGuards(MultiAuthGuard)
   @ApiBearerAuth()
-  @ApiOperation({ summary: "Crear producto" })
-  @ApiResponse({ description: "Producto creado correctamente" })
+  @ApiOperation({
+    summary: "Crear un nuevo producto asociado a un viaje",
+    description: "Crea un nuevo producto y lo asocia al viaje especificado",
+  })
+  @ApiParam({
+    name: "tripId",
+    description: "ID del viaje al que se asociará el producto",
+    type: "string",
+    example: "123e4567-e89b-12d3-a456-426614174000",
+  })
+  @ApiBody({
+    type: CreateProductDto,
+    description: "Datos del producto a crear",
+  })
+  @ApiCreatedResponse({
+    description: "Producto creado correctamente",
+    schema: {
+      example: {
+        id: "0a3a3e8f-0823-4fec-b475-a8a3f4d47180",
+        name: "Viaje #1",
+        date: "2025-07-05",
+        travelers: ["Pepito Torres", "Juan Perez"],
+        observation: "Este viaje es para cotizar productos de China",
+        createdAt: "2025-07-22T21:22:34.012Z",
+        updatedAt: "2025-07-22T21:22:34.012Z",
+        products: [
+          {
+            id: 1,
+            categoryMaster: "electrodomesticos",
+            reference: "REF12345",
+            name: "Televisor 4K",
+            price: "1000",
+            cuantity: 10,
+            color: "Rojo",
+            height: 1,
+            width: 5,
+            depth: 3,
+            manufacturing_date: "2023-10-01T05:00:00.000Z",
+            quantity_per_box: 10,
+            total_quantity_per_box: 100,
+            total_quantity: 1000,
+            own_packaging: true,
+            state: "pending",
+            desactivated: false,
+            created_at: "2025-07-22T21:22:49.799Z",
+            updated_at: "2025-07-22T21:22:49.799Z",
+            tripId: "0a3a3e8f-0823-4fec-b475-a8a3f4d47180",
+          },
+        ],
+      },
+    },
+  })
+  @ApiNotFoundResponse({
+    description: "Viaje no encontrado",
+    content: {
+      "application/json": {
+        example: {
+          statusCode: 404,
+          message: "Trip not found",
+          error: "Not Found",
+        },
+      },
+    },
+  })
+  @ApiBadRequestResponse({
+    description: "Datos de entrada inválidos",
+    content: {
+      "application/json": {
+        example: {
+          statusCode: 400,
+          message: [
+            "name should not be empty",
+            "price must be a positive number",
+          ],
+          error: "Bad Request",
+        },
+      },
+    },
+  })
+  @ApiUnauthorizedResponse({
+    description: "No autorizado. Token inválido o no proporcionado",
+    content: {
+      "application/json": {
+        example: {
+          statusCode: 401,
+          message: "Unauthorized",
+          error: "Unauthorized",
+        },
+      },
+    },
+  })
   async createProduct(
     @Param("tripId") tripId: string,
     @Body() createProductDto: CreateProductDto,
     @Req() req: any
   ) {
     const userId = req.user?.userId;
-    console.log("🧾 userId recibido del token:", userId);
-
-    return this.tripsService.createProduct(tripId, createProductDto, userId);
+    return await this.tripsService.createProduct(
+      tripId,
+      createProductDto,
+      userId
+    );
   }
-  //---------------------------------------------------
+
   @Post(":tripId/providers")
   @UseGuards(MultiAuthGuard)
   @ApiBearerAuth()
-  @ApiOperation({ summary: "Crear proveedor" })
-  @ApiResponse({ description: "Proveedor creado correctamente" })
-  async createProvider(
+  @ApiOperation({
+    summary: "Crear un nuevo proveedor asociado a un viaje",
+    description:
+      "Crea un nuevo proveedor y lo asocia al viaje especificado, incluyendo imágenes si se proporcionan",
+  })
+  @ApiParam({
+    name: "tripId",
+    description: "ID del viaje al que se asociará el proveedor",
+    type: "string",
+    example: "123e4567-e89b-12d3-a456-426614174000",
+  })
+  @ApiBody({
+    type: CreateProviderDTO,
+    description: "Datos del proveedor a crear",
+  })
+  @ApiCreatedResponse({
+    description: "Proveedor creado correctamente",
+    schema: {
+      example: {
+        id: "367b762a-500b-4c9d-ba72-d878bba06f4d",
+        name: "Viaje #1",
+        date: "2025-07-05",
+        travelers: ["Pepito Torres", "Juan Perez"],
+        observation: "Este viaje es para cotizar productos de China",
+        createdAt: "2025-07-22T21:36:40.460Z",
+        updatedAt: "2025-07-22T21:36:40.460Z",
+        providers: [
+          {
+            id: "7fc4db0c-ab7c-4765-a5f7-f747531c0c4c",
+            name: "Proveedor 1",
+            main_picture:
+              "https://www.zotal.com/wp-content/uploads/2019/08/razascaballos.png",
+            wechat_contact: "wechat123",
+            phone_number: "545454",
+            address: "Calle 71 sur",
+            city: "Medellin",
+            gps_location: "6.2442,-75.5812",
+            master_genre: "fgdfhgfhfdg",
+            observation: "Proveedor confiable y puntual",
+            created_at: "2025-07-22T21:36:53.016Z",
+            updated_at: "2025-07-22T21:36:53.016Z",
+            is_active: true,
+            pictures: [
+              {
+                id: "2e23e097-5d98-48dc-9f74-1d5a40fdae0d",
+                url_foto: "https://miimagen.com/extra4.jpg",
+                order: 1,
+                created_at: "2025-07-22T21:36:53.038Z",
+              },
+            ],
+          },
+        ],
+      },
+    },
+  })
+  @ApiNotFoundResponse({
+    description: "Viaje no encontrado",
+    content: {
+      "application/json": {
+        example: {
+          statusCode: 404,
+          message: "Trip not found",
+          error: "Not Found",
+        },
+      },
+    },
+  })
+  @ApiBadRequestResponse({
+    description: "Validación fallida",
+    content: {
+      "application/json": {
+        examples: {
+          nameExists: {
+            summary: "Nombre de proveedor ya existe",
+            value: {
+              statusCode: 400,
+              message: "Already registered provider name",
+              error: "Bad Request",
+            },
+          },
+          invalidData: {
+            summary: "Datos inválidos",
+            value: {
+              statusCode: 400,
+              message: [
+                "name should not be empty",
+                "email must be an email",
+                "phone_number must be a number",
+              ],
+              error: "Bad Request",
+            },
+          },
+        },
+      },
+    },
+  })
+  @ApiUnauthorizedResponse({
+    description: "No autorizado",
+    content: {
+      "application/json": {
+        example: {
+          statusCode: 401,
+          message: "Unauthorized",
+          error: "Unauthorized",
+        },
+      },
+    },
+  })
+  async createProviders(
     @Param("tripId") tripId: string,
     @Body() createProviderDto: CreateProviderDTO,
     @Req() req: any
   ) {
     const userId = req.user?.userId;
-    console.log("🧾 userId desde token:", userId);
     return await this.tripsService.createProviders(
       tripId,
       createProviderDto,
@@ -380,7 +585,6 @@ export class TripsController {
     );
   }
 
-  //--------------------------------------------------------------------------------------------
   @Post(":userId")
   @UseGuards(MultiAuthGuard)
   @ApiBearerAuth()
@@ -482,18 +686,93 @@ export class TripsController {
   ) {
     return await this.tripsService.create(userId, createTripDto);
   }
-//--------------------------------------------------------------------------------------------
-  @ApiOperation({
-    summary: "Obtiene todos los viajes",
-    description: "Devuelve la lista completa de viajes.",
-  })
-  @ApiResponse({
-    status: 200,
-    description: "Listado de viajes obtenido correctamente.",
-  })
 
-  @Get()
-  async findAlltripsController() {
-    return this.tripsService.findAllTripsService();
+  @Put(":tripId")
+  @UseGuards(MultiAuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({
+    summary: "Actualizar un viaje existente",
+    description:
+      "Modifica los datos de un viaje existente identificado por su ID",
+  })
+  @ApiParam({
+    name: "tripId",
+    description: "ID del viaje a actualizar",
+    type: "string",
+    example: "123e4567-e89b-12d3-a456-426614174000",
+  })
+  @ApiBody({
+    type: CreateTripDTO,
+    description: "Datos actualizados del viaje",
+  })
+  @ApiOkResponse({
+    description: "Viaje modificado correctamente",
+    schema: {
+      example: {
+        name: "Viaje #1",
+        date: "2025-07-06",
+        travelers: ["Pepito Torres", "Juan Perez"],
+        observation: "Este viaje es para cotizar productos de China",
+      },
+    },
+  })
+  @ApiNotFoundResponse({
+    description: "Viaje no encontrado",
+    content: {
+      "application/json": {
+        example: {
+          statusCode: 404,
+          message: "Trip not found",
+          error: "Not Found",
+        },
+      },
+    },
+  })
+  @ApiBadRequestResponse({
+    description: "Validación fallida",
+    content: {
+      "application/json": {
+        examples: {
+          invalidData: {
+            summary: "Datos inválidos",
+            value: {
+              statusCode: 400,
+              message: [
+                "name should not be empty",
+                "date must be a valid date",
+                "budget must be a positive number",
+              ],
+              error: "Bad Request",
+            },
+          },
+          nameConflict: {
+            summary: "Nombre de viaje ya existe",
+            value: {
+              statusCode: 400,
+              message: "Trip name already exists for this user",
+              error: "Bad Request",
+            },
+          },
+        },
+      },
+    },
+  })
+  @ApiUnauthorizedResponse({
+    description: "No autorizado",
+    content: {
+      "application/json": {
+        example: {
+          statusCode: 401,
+          message: "Unauthorized",
+          error: "Unauthorized",
+        },
+      },
+    },
+  })
+  async updateTrip(
+    @Param("tripId") tripId: string,
+    @Body() updateTripDto: UpdateTripDTO
+  ) {
+    return await this.tripsService.updateTrip(tripId, updateTripDto);
   }
 }
