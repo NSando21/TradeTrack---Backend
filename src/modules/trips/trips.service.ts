@@ -43,18 +43,23 @@ export class TripsService {
     });
   }
 
-  async getTrips(page: number, limit: number): Promise<Trip[]> {
-    let trips = await this.tripsRepository.find();
-
-    const start = (page - 1) * limit;
-    const end = start + limit;
-
-    trips = trips.slice(start, end);
-
-    return trips;
+  async getTrips(): Promise<Trip[]> {
+    return await this.tripsRepository.find({
+      order: { createdAt: "DESC" },
+    });
   }
+  // async getTrips(page: number, limit: number): Promise<Trip[]> {
+  //   let trips = await this.tripsRepository.find();
 
-  async findAllProvidersById(tripId: string) {
+  //   const start = (page - 1) * limit;
+  //   const end = start + limit;
+
+  //   trips = trips.slice(start, end);
+
+  //   return trips;
+  // }
+
+  async findAllProvidersById(tripId: string): Promise<Provider[]> {
     const findTrip = await this.tripsRepository.findOneBy({
       id: tripId,
     });
@@ -66,7 +71,7 @@ export class TripsService {
     });
   }
 
-  async findAllProductsById(tripId: string) {
+  async findAllProductsById(tripId: string): Promise<Product[]> {
     const findTrip = await this.tripsRepository.findOneBy({
       id: tripId,
     });
@@ -82,7 +87,7 @@ export class TripsService {
     tripId: string,
     createProductDto: CreateProductDto,
     userId: string
-  ) {
+  ): Promise<Trip> {
     if (!userId) {
       throw new UnauthorizedException(
         "The authenticated user could not be determined"
@@ -111,7 +116,7 @@ export class TripsService {
     tripId: string,
     createProviderDto: CreateProviderDTO,
     userId: string
-  ) {
+  ): Promise<Trip> {
     const findTrip = await this.tripsRepository.findOneBy({
       id: tripId,
     });
@@ -215,7 +220,7 @@ export class TripsService {
     return findTrip;
   }
 
-  async findById(tripId: string) {
+  async findById(tripId: string): Promise<Trip> {
     const trip = await this.tripsRepository.findOne({
       where: { id: tripId },
       relations: { products: true, providers: true },

@@ -137,20 +137,20 @@ export class TripsController {
     description:
       "Recupera todos los viajes con paginación. Solo accesible para usuarios con rol de administrador.",
   })
-  @ApiQuery({
-    name: "page",
-    description: "Número de página para paginación (debe ser mayor a 0)",
-    required: false,
-    type: "integer",
-    example: 1,
-  })
-  @ApiQuery({
-    name: "limit",
-    description: "Límite de resultados por página (debe estar entre 1 y 100)",
-    required: false,
-    type: "integer",
-    example: 10,
-  })
+  // @ApiQuery({
+  //   name: "page",
+  //   description: "Número de página para paginación (debe ser mayor a 0)",
+  //   required: false,
+  //   type: "integer",
+  //   example: 1,
+  // })
+  // @ApiQuery({
+  //   name: "limit",
+  //   description: "Límite de resultados por página (debe estar entre 1 y 100)",
+  //   required: false,
+  //   type: "integer",
+  //   example: 10,
+  // })
   @ApiOkResponse({
     description: "Todos los viajes listados correctamente",
     schema: {
@@ -190,12 +190,15 @@ export class TripsController {
       },
     },
   })
-  async getTrips(@Query("page") page: string, @Query("limit") limit: string) {
-    if (page && limit) {
-      return this.tripsService.getTrips(+page, +limit);
-    }
-    return this.tripsService.getTrips(1, 7);
+  async getTrips() {
+    return await this.tripsService.getTrips();
   }
+  // async getTrips(@Query("page") page: string, @Query("limit") limit: string) {
+  //   if (page && limit) {
+  //     return this.tripsService.getTrips(+page, +limit);
+  //   }
+  //   return this.tripsService.getTrips(1, 7);
+  // }
 
   @Get(":tripId/providers")
   @UseGuards(MultiAuthGuard)
