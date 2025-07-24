@@ -9,13 +9,17 @@ import { RegisterUserDto } from "./dto/register-user.dto";
 import { LoginUserDto } from "./dto/login-user.dto";
 import * as bcrypt from "bcryptjs";
 import { EmailService } from "./email.service";
+import { TripsService } from "../trips/trips.service";
+import { NotificationsGateway } from "../notifications/notifications.gateway";
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly usersService: UsersService,
     private readonly jwtService: JwtService,
-    private readonly emailService: EmailService
+    private readonly emailService: EmailService,
+    private readonly tripsService: TripsService,
+    private readonly notificationsGateway: NotificationsGateway,
   ) {}
 
   async register(registerDto: RegisterUserDto) {
@@ -70,6 +74,16 @@ export class AuthService {
       console.error("Error enviando email de bienvenida en login:", error);
       // No lanzamos error para no interrumpir el login
     }
+
+      try {
+    const viajeProximo = await this.tripsService.getViajeProximo(user.id);
+    if (viajeProximo) {
+      const mensaje = `¡Tienes un viaje próximo el ${viajeProximo.date}! ✈️`;
+      this.notificationsGateway.notifyUser(user.id, mensaje);
+    }
+  } catch (error) {
+    console.error("Error buscando viaje próximo:", error);
+  }
 
     // Devolver todos los datos del usuario (sin la contraseña) junto con el token
     const { password, ...userWithoutPassword } = user;
