@@ -8,6 +8,7 @@ import {
   Put,
   Query,
   Req,
+  Patch,
 } from "@nestjs/common";
 import { TripsService } from "./trips.service";
 import { CreateTripDTO } from "./dtos/trip.dto";
@@ -687,7 +688,7 @@ export class TripsController {
     return await this.tripsService.create(userId, createTripDto);
   }
 
-  @Put(":tripId")
+  @Patch(":tripId")
   @UseGuards(MultiAuthGuard)
   @ApiBearerAuth()
   @ApiOperation({

@@ -178,7 +178,10 @@ export class TripsService {
     return await this.tripsRepository.save(trip);
   }
 
-  async updateTrip(tripId: string, updateTripDto: UpdateTripDTO) {
+  async updateTrip(
+    tripId: string,
+    updateTripDto: Partial<UpdateTripDTO>
+  ): Promise<Trip> {
     const findTrip = await this.tripsRepository.findOne({
       where: { id: tripId },
       relations: ["user"],
@@ -199,18 +202,17 @@ export class TripsService {
       }
     }
 
-    const updatedTrip = {
-      ...findTrip,
-      ...updateTripDto,
-      date: updateTripDto.date ? new Date(updateTripDto.date) : findTrip.date,
-      updatedAt: new Date(),
-    };
+    Object.assign(findTrip, updateTripDto);
 
-    await this.tripsRepository.update(tripId, updatedTrip);
+    if (updateTripDto.date) {
+      findTrip.date = new Date(updateTripDto.date);
+    }
 
-    return this.tripsRepository.findOneBy({
-      id: tripId,
-    });
+    findTrip.updatedAt = new Date();
+
+    await this.tripsRepository.save(findTrip);
+
+    return findTrip;
   }
 
   async findById(tripId: string) {
