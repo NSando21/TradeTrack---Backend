@@ -1,13 +1,13 @@
-import { Injectable } from '@nestjs/common';
-import { PassportStrategy } from '@nestjs/passport';
-import { ExtractJwt, Strategy } from 'passport-jwt';
-import { Request } from 'express';
-import * as dotenv from 'dotenv';
+import { Injectable } from "@nestjs/common";
+import { PassportStrategy } from "@nestjs/passport";
+import { ExtractJwt, Strategy } from "passport-jwt";
+import { Request } from "express";
+import * as dotenv from "dotenv";
 
 dotenv.config();
 
 @Injectable()
-export class Auth0Strategy extends PassportStrategy(Strategy, 'auth0') {
+export class Auth0Strategy extends PassportStrategy(Strategy, "auth0") {
   constructor() {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
@@ -22,4 +22,4 @@ export class Auth0Strategy extends PassportStrategy(Strategy, 'auth0') {
   async validate(req: Request, payload: any) {
     return payload;
   }
-} 
+}

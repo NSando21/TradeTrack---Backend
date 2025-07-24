@@ -17,7 +17,7 @@ export class Trip {
   @PrimaryGeneratedColumn("uuid")
   id: string;
 
-  @Column({ type: "varchar", length: 50, nullable: false, unique: true })
+  @Column({ type: "varchar", length: 50, nullable: false })
   name: string;
 
   @Column({ type: "date", nullable: false })

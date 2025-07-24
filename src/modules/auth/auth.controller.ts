@@ -1,10 +1,11 @@
 import { Controller, Post, Body, HttpCode, HttpStatus, UseGuards, Get, Request } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse, ApiExtraModels, getSchemaPath } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiResponse, ApiExtraModels, getSchemaPath, ApiBearerAuth } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
 import { RegisterUserDto } from './dto/register-user.dto';
 import { LoginUserDto } from './dto/login-user.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { User } from '../users/user.entity';
+import { MultiAuthGuard } from './multi-auth.guard';
 
 @ApiTags('auth')
 @ApiExtraModels(User)
@@ -66,8 +67,9 @@ export class AuthController {
   }
 
   @Get('profile')
-  @UseGuards(AuthGuard('auth0'))
-  @ApiOperation({ summary: 'Obtener perfil del usuario autenticado con Auth0' })
+  @UseGuards(MultiAuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Obtener perfil del usuario autenticado con Auth0 o JWT' })
   @ApiResponse({
     status: 200,
     description: 'Perfil del usuario autenticado.',
