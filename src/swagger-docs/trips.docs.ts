@@ -320,7 +320,8 @@ export const CreateProductByTripIdDoc = () =>
   applyDecorators(
     ApiOperation({
       summary: "Crear un nuevo producto asociado a un viaje",
-      description: "Crea un nuevo producto y lo asocia al viaje especificado",
+      description:
+        "Crea un nuevo producto y lo asocia al viaje especificado, incluyendo imágenes si se proporcionan",
     }),
     ApiParam({
       name: "tripId",

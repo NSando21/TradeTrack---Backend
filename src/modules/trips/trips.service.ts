@@ -16,6 +16,7 @@ import { CreateProductDto } from "@/products/dto/create-product.dto";
 import { Product } from "@/products/entities/product.entity";
 import { User } from "../users/user.entity";
 import { UpdateTripDTO } from "./dtos/update-trip.dto";
+import { ProductPicture } from "@/products/entities/product-pictures.entity";
 
 @Injectable()
 export class TripsService {
@@ -29,7 +30,9 @@ export class TripsService {
     @InjectRepository(User)
     private readonly usersRepository: Repository<User>,
     @InjectRepository(Product)
-    private readonly productsRepository: Repository<Product>
+    private readonly productsRepository: Repository<Product>,
+    @InjectRepository(ProductPicture)
+    private readonly productsPicturesRepository: Repository<ProductPicture>
   ) {}
 
   async findAll(userId: string): Promise<Trip[]> {
@@ -98,17 +101,30 @@ export class TripsService {
 
     if (!findTrip) throw new NotFoundException("Trip not found");
 
+    const { pictures, ...productData } = createProductDto;
+
     const newProduct = this.productsRepository.create({
-      ...createProductDto,
+      ...productData,
       trip: findTrip,
       user: { id: userId }, // ← Vincula el producto con el usuario
     });
 
-    await this.productsRepository.save(newProduct);
+    const savedProduct = await this.productsRepository.save(newProduct);
+
+    if (pictures && pictures.length > 0) {
+      const pictureEntities = pictures.map((pic) =>
+        this.productsPicturesRepository.create({
+          ...pic,
+          product: savedProduct,
+        })
+      );
+
+      await this.productsPicturesRepository.save(pictureEntities);
+    }
 
     return await this.tripsRepository.findOne({
       where: { id: tripId },
-      relations: { products: true },
+      relations: { products: { pictures: true } },
     });
   }
 

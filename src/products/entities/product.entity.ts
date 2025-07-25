@@ -5,12 +5,14 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
 import { ProductCategory, ProductState } from "../dto/create-product.dto";
 import { Trip } from "../../modules/trips/trip.entity";
 import { User } from "@/modules/users/user.entity";
+import { ProductPicture } from "./product-pictures.entity";
 
 @Entity()
 export class Product {
@@ -177,6 +179,11 @@ export class Product {
     default: true,
   })
   is_active: boolean;
+
+  @OneToMany(() => ProductPicture, (picture) => picture.product, {
+    cascade: true,
+  })
+  pictures: ProductPicture[];
 
   @ManyToOne(() => Trip, (trip) => trip.products)
   @JoinColumn({ name: "tripId" })
