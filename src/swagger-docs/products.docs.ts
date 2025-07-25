@@ -1,8 +1,13 @@
-import { ProductState } from "@/products/dto/create-product.dto";
+import {
+  CreateProductDto,
+  ProductState,
+} from "@/products/dto/create-product.dto";
+import { UpdateProductDto } from "@/products/dto/update-product.dto";
 import { Product } from "@/products/entities/product.entity";
 import { applyDecorators } from "@nestjs/common";
 import {
   ApiBadRequestResponse,
+  ApiBody,
   ApiForbiddenResponse,
   ApiInternalServerErrorResponse,
   ApiNotFoundResponse,
@@ -392,6 +397,96 @@ export const GetProductsByUserIdDoc = () =>
             statusCode: 500,
             message: "Error al obtener los productos del usuario",
             error: "Internal Server Error",
+          },
+        },
+      },
+    })
+  );
+
+export const UpdateProductByProductIdDoc = () =>
+  applyDecorators(
+    ApiOperation({
+      summary: "Actualizar un producto existente",
+      description:
+        "Actualiza parcialmente los datos de un producto existente identificado por su ID.",
+    }),
+    ApiParam({
+      name: "productId",
+      description: "ID único del producto a actualizar",
+      type: "string",
+      format: "uuid",
+      example: "123e4567-e89b-12d3-a456-426614174000",
+    }),
+    ApiBody({
+      type: CreateProductDto,
+      description: "Datos parciales del producto a actualizar",
+    }),
+    ApiOkResponse({
+      description: "Producto actualizado exitosamente",
+      type: Product,
+      content: {
+        "application/json": {
+          example: {
+            id: "123e4567-e89b-12d3-a456-426614174000",
+            name: "Producto Actualizado",
+            price: 149.99,
+            color: "Azul",
+            updated_at: "2023-06-20T15:30:00.000Z",
+            user: {
+              id: "323e4567-e89b-12d3-a456-426614174000",
+              name: "Usuario Propietario",
+            },
+          },
+        },
+      },
+    }),
+    ApiNotFoundResponse({
+      description: "Producto no encontrado",
+      content: {
+        "application/json": {
+          example: {
+            statusCode: 404,
+            message: "Product not found",
+            error: "Not Found",
+          },
+        },
+      },
+    }),
+    ApiBadRequestResponse({
+      description: "Datos de entrada inválidos",
+      content: {
+        "application/json": {
+          example: {
+            statusCode: 400,
+            message: [
+              "price must be a positive number",
+              "color must be a string",
+            ],
+            error: "Bad Request",
+          },
+        },
+      },
+    }),
+    ApiUnauthorizedResponse({
+      description: "No autorizado",
+      content: {
+        "application/json": {
+          example: {
+            statusCode: 401,
+            message: "Unauthorized",
+            error: "Unauthorized",
+          },
+        },
+      },
+    }),
+    ApiForbiddenResponse({
+      description: "No tiene permisos para actualizar este producto",
+      content: {
+        "application/json": {
+          example: {
+            statusCode: 403,
+            message: "Forbidden resource",
+            error: "Forbidden",
           },
         },
       },

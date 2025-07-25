@@ -1,4 +1,5 @@
 import {
+  IsArray,
   IsBoolean,
   IsDate,
   IsEnum,
@@ -8,9 +9,12 @@ import {
   IsPositive,
   IsString,
   IsUUID,
+  MinLength,
+  ValidateNested,
 } from "class-validator";
 import { Transform, Type } from "class-transformer";
 import { ApiProperty } from "@nestjs/swagger";
+import { ProductPictureDTO } from "./create-product-picture.dto";
 
 export enum ProductState {
   PENDING = "pending",
@@ -55,6 +59,29 @@ export class CreateProductDto {
   @IsNotEmpty()
   @IsString()
   name: string;
+
+  @ApiProperty({
+    description: "Foto principal del producto",
+    example:
+      "https://www.zotal.com/wp-content/uploads/2019/08/razascaballos.png",
+  })
+  @IsOptional()
+  @IsNotEmpty()
+  @IsString()
+  @MinLength(3)
+  main_picture?: string;
+
+  @ApiProperty({
+    description: "Fotos adicionales del producto",
+    type: [ProductPictureDTO],
+    example: [{ url_foto: "https://miimagen.com/extra4.jpg", order: 1 }],
+    //required: false,
+  })
+  @IsOptional()
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => ProductPictureDTO)
+  pictures?: ProductPictureDTO[];
 
   @ApiProperty({
     description: "Precio del producto",

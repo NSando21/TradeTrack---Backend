@@ -1,38 +1,24 @@
 import {
   Controller,
   Get,
-  Post,
-  Body,
   Patch,
   Param,
-  Delete,
   Query,
   ParseUUIDPipe,
+  Body,
 } from "@nestjs/common";
 import { ProductsService } from "./products.service";
-import { CreateProductDto, ProductState } from "./dto/create-product.dto";
-import { UpdateProductDto } from "./dto/update-product.dto";
-import {
-  ApiBadRequestResponse,
-  ApiForbiddenResponse,
-  ApiInternalServerErrorResponse,
-  ApiNotFoundResponse,
-  ApiOkResponse,
-  ApiOperation,
-  ApiParam,
-  ApiQuery,
-  ApiResponse,
-  ApiTags,
-  ApiUnauthorizedResponse,
-} from "@nestjs/swagger";
-import { Product } from "./entities/product.entity";
+import { ProductState } from "./dto/create-product.dto";
+import { ApiTags } from "@nestjs/swagger";
 import {
   DesactivateProductByIdDoc,
   GetProductByIdDoc,
   GetProductsByStateDoc,
   GetProductsByUserIdDoc,
   GetProductsDoc,
+  UpdateProductByProductIdDoc,
 } from "@/swagger-docs/products.docs";
+import { UpdateProductDto } from "./dto/update-product.dto";
 
 @ApiTags("Products")
 @Controller("products")
@@ -80,5 +66,17 @@ export class ProductsController {
   @GetProductsByUserIdDoc()
   async findProductsByUser(@Param("id", new ParseUUIDPipe()) id: string) {
     return this.productsService.findProductsByUser(id);
+  }
+
+  @Patch(":productId")
+  @UpdateProductByProductIdDoc()
+  async updateProduct(
+    @Param("productId") productId: string,
+    @Body() updateProductDto: UpdateProductDto
+  ) {
+    return await this.productsService.updateProduct(
+      productId,
+      updateProductDto
+    );
   }
 }

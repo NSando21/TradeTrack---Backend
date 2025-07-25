@@ -6,6 +6,7 @@ import { Repository } from "typeorm";
 import { Product } from "./entities/product.entity";
 import { Trip } from "@/modules/trips/trip.entity";
 import { UUID } from "node:crypto";
+import { User } from "@/modules/users/user.entity";
 
 @Injectable()
 export class ProductsService {
@@ -13,7 +14,9 @@ export class ProductsService {
     @InjectRepository(Product)
     private productRepository: Repository<Product>,
     @InjectRepository(Trip)
-    private tripRepository: Repository<Trip>
+    private tripRepository: Repository<Trip>,
+    @InjectRepository(User)
+    private readonly usersRepository: Repository<User>
   ) {}
 
   async newProductService(NewProduct: CreateProductDto) {
@@ -77,8 +80,34 @@ export class ProductsService {
   //---------------------------------------------
 
   async findProductsByUser(userId: string): Promise<Product[]> {
-    return this.productRepository.find({
-      where: { userId },
+    const findUser = await this.usersRepository.findOneBy({
+      id: userId,
     });
+
+    if (!findUser) throw new NotFoundException("User not found");
+
+    return await this.productRepository.find({
+      where: { user: { id: userId } },
+    });
+  }
+
+  async updateProduct(
+    productId: string,
+    updateProductDto: Partial<UpdateProductDto>
+  ): Promise<Product> {
+    const findProduct = await this.productRepository.findOne({
+      where: { id: productId },
+      relations: ["user"],
+    });
+
+    if (!findProduct) throw new NotFoundException("Product not found");
+
+    Object.assign(findProduct, updateProductDto);
+
+    findProduct.updated_at = new Date();
+
+    await this.productRepository.save(findProduct);
+
+    return findProduct;
   }
 }
