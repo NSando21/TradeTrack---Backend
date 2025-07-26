@@ -1,33 +1,53 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
-import { UsersService } from './users.service';
-import { User } from './user.entity';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+} from "@nestjs/common";
+import { UsersService } from "./users.service";
+import { User } from "./user.entity";
+import {
+  GetAllUsersDoc,
+  GetUserByIdDoc,
+  CreateUserDoc,
+  UpdateUserDoc,
+  DeleteUserDoc,
+} from "@/swagger-docs/users.docs";
 
-@Controller('users')
+@Controller("users")
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Get()
+  @GetAllUsersDoc()
   findAll() {
     return this.usersService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
+  @Get(":id")
+  @GetUserByIdDoc()
+  findOne(@Param("id") id: string) {
     return this.usersService.findOne(id);
   }
 
   @Post()
+  @CreateUserDoc()
   create(@Body() createUserDto: Partial<User>) {
     return this.usersService.create(createUserDto);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUserDto: Partial<User>) {
+  @Patch(":id")
+  @UpdateUserDoc()
+  update(@Param("id") id: string, @Body() updateUserDto: Partial<User>) {
     return this.usersService.update(id, updateUserDto);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
+  @Delete(":id")
+  @DeleteUserDoc()
+  remove(@Param("id") id: string) {
     return this.usersService.remove(id);
   }
-} 
+}
