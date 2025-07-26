@@ -104,4 +104,7 @@ export class User {
     description: "Proveedores creados por el usuario",
   })
   providers: Provider[];
+
+  @Column({ name: 'Image_Profile', nullable: true })
+  Image_Profile?: string;
 }
