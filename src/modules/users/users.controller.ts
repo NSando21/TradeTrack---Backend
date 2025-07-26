@@ -16,10 +16,12 @@ import {
   UpdateUserDoc,
   DeleteUserDoc,
 } from "@/swagger-docs/users.docs";
+import { UpdateUserDTO } from "./dto/update-users.dto";
 
 @Controller("users")
 export class UsersController {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(
+    private readonly usersService: UsersService) {}
 
   @Get()
   @GetAllUsersDoc()
@@ -38,10 +40,13 @@ export class UsersController {
   create(@Body() createUserDto: Partial<User>) {
     return this.usersService.create(createUserDto);
   }
-
+//--------------------------------------------recargar y no aparesca al final
   @Patch(":id")
   @UpdateUserDoc()
-  update(@Param("id") id: string, @Body() updateUserDto: Partial<User>) {
+  async update(
+    @Param("id") id: string, 
+    @Body() updateUserDto: UpdateUserDTO
+  ) {
     return this.usersService.update(id, updateUserDto);
   }
 
