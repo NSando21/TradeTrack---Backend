@@ -5,10 +5,10 @@ import {
   UnauthorizedException,
 } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Repository } from "typeorm";
+import { Between, MoreThan, Repository } from "typeorm";
 import { Trip } from "./trip.entity";
 import { CreateTripDTO } from "./dtos/trip.dto";
-
+import { LessThanOrEqual } from "typeorm";
 import { Provider } from "../providers/Entities/provider.entity";
 import { CreateProviderDTO } from "../providers/dtos/create-provider.dto";
 import { ProviderPicture } from "../providers/Entities/provider-pictures.entity";
@@ -16,6 +16,7 @@ import { CreateProductDto } from "@/products/dto/create-product.dto";
 import { Product } from "@/products/entities/product.entity";
 import { User } from "../users/user.entity";
 import { UpdateTripDTO } from "./dtos/update-trip.dto";
+import { NotificationsGateway } from "../notifications/notifications.gateway";
 import { ProductPicture } from "@/products/entities/product-pictures.entity";
 
 @Injectable()
@@ -23,6 +24,7 @@ export class TripsService {
   constructor(
     @InjectRepository(Trip)
     private readonly tripsRepository: Repository<Trip>,
+    private readonly notificationsGateway: NotificationsGateway,
     @InjectRepository(Provider)
     private readonly providersRepository: Repository<Provider>,
     @InjectRepository(ProviderPicture)
@@ -243,5 +245,21 @@ export class TripsService {
     });
     if (!trip) throw new NotFoundException("Trip not found");
     return trip;
+  }
+
+  async getViajeProximo(userId: string) {
+    const now = new Date ();
+    const tresDiasDespues = new Date();
+    tresDiasDespues.setDate(tresDiasDespues.getDate() + 3);
+
+    return await this.tripsRepository.findOne({
+      where: {
+        user: { id: userId },
+        date: Between(now, tresDiasDespues),
+      },
+      order: {
+        date: "ASC",
+      },
+    },);
   }
 }

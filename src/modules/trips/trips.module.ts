@@ -7,10 +7,13 @@ import { Provider } from "../providers/Entities/provider.entity";
 import { ProviderPicture } from "../providers/Entities/provider-pictures.entity";
 import { Product } from "@/products/entities/product.entity";
 import { User } from "../users/user.entity";
+import { NotificationsModule } from "../notifications/notifications.module";
 import { ProductPicture } from "@/products/entities/product-pictures.entity";
 
 @Module({
   imports: [
+    TypeOrmModule.forFeature([Trip, Provider, ProviderPicture, Product, User]),
+    NotificationsModule
     TypeOrmModule.forFeature([
       Trip,
       Provider,
@@ -22,5 +25,6 @@ import { ProductPicture } from "@/products/entities/product-pictures.entity";
   ],
   controllers: [TripsController],
   providers: [TripsService],
+  exports: [TripsService],
 })
 export class TripsModule {}

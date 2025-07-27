@@ -11,6 +11,8 @@ import { TripsModule } from "./modules/trips/trips.module";
 import { ProviderModule } from "./modules/providers/providers.module";
 import { ProductsModule } from "./products/products.module";
 import { AuthModule } from './modules/auth/auth.module';
+import { NotificationsGateway } from './modules/notifications/notifications.gateway';
+
 import { FileUploadModule } from "./modules/file-upload/file-upload.module";
 
 @Module({
@@ -36,6 +38,6 @@ import { FileUploadModule } from "./modules/file-upload/file-upload.module";
     FileUploadModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, NotificationsGateway],
 })
 export class AppModule {}
