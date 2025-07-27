@@ -6,7 +6,8 @@ import {
   Get,
   Request,
 } from "@nestjs/common";
-import { ApiTags, ApiExtraModels, ApiBearerAuth } from "@nestjs/swagger";
+import { ApiTags, ApiExtraModels, ApiBearerAuth, ApiOperation, ApiResponse } from "@nestjs/swagger";
+import { AuthGuard } from "@nestjs/passport";
 import { AuthService } from "./auth.service";
 import { RegisterUserDto } from "./dto/register-user.dto";
 import { LoginUserDto } from "./dto/login-user.dto";
@@ -383,7 +384,6 @@ export class AuthController {
         clientId: process.env.AUTH0_CLIENT_ID,
         hasSecret: !!process.env.AUTH0_CLIENT_SECRET
       }
->>>>>>> main
     };
   }
 }
