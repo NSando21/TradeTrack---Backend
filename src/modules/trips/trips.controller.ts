@@ -11,11 +11,11 @@ import {
 import { TripsService } from "./trips.service";
 import { CreateTripDTO } from "./dtos/trip.dto";
 import { CreateProviderDTO } from "../providers/dtos/create-provider.dto";
-import { CreateProductDto } from "@/products/dto/create-product.dto";
+import { CreateProductDto } from "../../products/dto/create-product.dto";
 import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
 import { MultiAuthGuard } from "../auth/multi-auth.guard";
-import { Roles } from "@/decorators/roles.decorator";
-import { Role } from "@/roles.enum";
+import { Roles } from "../../decorators/roles.decorator";
+import { Role } from "../../roles.enum";
 import { RolesGuard } from "../auth/roles.guard";
 import { UpdateTripDTO } from "./dtos/update-trip.dto";
 import {
@@ -28,7 +28,7 @@ import {
   GetTripByUserIdDoc,
   GetTripsDoc,
   UpdateTripByTripIdDoc,
-} from "@/swagger-docs/trips.docs";
+} from "../../swagger-docs/trips.docs";
 
 @ApiTags("Trips")
 @Controller("trips")

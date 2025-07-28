@@ -10,8 +10,8 @@ import {
   ApiBody,
   ApiResponse,
 } from "@nestjs/swagger";
-import { ProviderPictureDTO } from "@/modules/providers/dtos/create-provider-picture.dto";
-import { ReorderProviderPicturesDTO } from "@/modules/providers/dtos/reorder-provider-pictures.dto";
+import { ProviderPictureDTO } from "../modules/providers/dtos/create-provider-picture.dto";
+import { ReorderProviderPicturesDTO } from "../modules/providers/dtos/reorder-provider-pictures.dto";
 
 export const CreateProviderPictureDoc = () =>
   applyDecorators(

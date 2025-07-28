@@ -1,6 +1,6 @@
-import { CreateProviderDTO } from "@/modules/providers/dtos/create-provider.dto";
-import { CreateTripDTO } from "@/modules/trips/dtos/trip.dto";
-import { CreateProductDto } from "@/products/dto/create-product.dto";
+import { CreateProviderDTO } from "../modules/providers/dtos/create-provider.dto";
+import { CreateTripDTO } from "../modules/trips/dtos/trip.dto";
+import { CreateProductDto } from "../products/dto/create-product.dto";
 import { applyDecorators } from "@nestjs/common";
 import {
   ApiOperation,

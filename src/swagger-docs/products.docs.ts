@@ -1,9 +1,9 @@
 import {
   CreateProductDto,
   ProductState,
-} from "@/products/dto/create-product.dto";
-import { UpdateProductDto } from "@/products/dto/update-product.dto";
-import { Product } from "@/products/entities/product.entity";
+} from "../products/dto/create-product.dto";
+import { UpdateProductDto } from "../products/dto/update-product.dto";
+import { Product } from "../products/entities/product.entity";
 import { applyDecorators } from "@nestjs/common";
 import {
   ApiBadRequestResponse,

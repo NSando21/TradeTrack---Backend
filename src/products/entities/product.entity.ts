@@ -11,7 +11,7 @@ import {
 } from "typeorm";
 import { ProductCategory, ProductState } from "../dto/create-product.dto";
 import { Trip } from "../../modules/trips/trip.entity";
-import { User } from "@/modules/users/user.entity";
+import { User } from "../../modules/users/user.entity";
 import { ProductPicture } from "./product-pictures.entity";
 
 @Entity()

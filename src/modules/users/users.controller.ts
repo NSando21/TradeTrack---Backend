@@ -15,7 +15,7 @@ import {
   CreateUserDoc,
   UpdateUserDoc,
   DeleteUserDoc,
-} from "@/swagger-docs/users.docs";
+} from "../../swagger-docs/users.docs";
 import { UpdateUserDTO } from "./dto/update-users.dto";
 
 @Controller("users")

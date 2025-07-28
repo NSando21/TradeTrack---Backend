@@ -4,9 +4,9 @@ import { UpdateProductDto } from "./dto/update-product.dto";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { Product } from "./entities/product.entity";
-import { Trip } from "@/modules/trips/trip.entity";
+import { Trip } from "../modules/trips/trip.entity";
 import { UUID } from "node:crypto";
-import { User } from "@/modules/users/user.entity";
+import { User } from "../modules/users/user.entity";
 
 @Injectable()
 export class ProductsService {

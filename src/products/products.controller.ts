@@ -17,7 +17,7 @@ import {
   GetProductsByUserIdDoc,
   GetProductsDoc,
   UpdateProductByProductIdDoc,
-} from "@/swagger-docs/products.docs";
+} from "../swagger-docs/products.docs";
 import { UpdateProductDto } from "./dto/update-product.dto";
 
 @ApiTags("Products")

@@ -19,7 +19,7 @@ import {
   GetProfileDoc,
   TestAuth0Doc,
   Auth0StatusDoc,
-} from "@/swagger-docs/auth.docs";
+} from "../../swagger-docs/auth.docs";
 
 @ApiTags("auth")
 @ApiExtraModels(User)
