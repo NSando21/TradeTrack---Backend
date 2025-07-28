@@ -4,8 +4,8 @@
   "description": "Backend API con NestJS",
   "main": "dist/main.js",
   "scripts": {
-    "build": "npm install && tsc && npm run copy:templates",
-    "copy:templates": "xcopy src\\templates dist\\templates /E /I /Y",
+     "build": "npm install && tsc && npm run copy:templates",
+    "copy:templates": "cpx \"src/templates/**/*\" dist/templates",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "node dist/main.js",
     "start:dev": "nest start --watch",
@@ -59,6 +59,7 @@
     "@types/express": "^5.0.3",
     "@types/multer": "^2.0.0",
     "@types/node": "^24.1.0",
+    "cpx": "^1.5.0",
     "nodemon": "^3.1.10",
     "ts-node": "^10.9.2",
     "typescript": "^5.8.3"
