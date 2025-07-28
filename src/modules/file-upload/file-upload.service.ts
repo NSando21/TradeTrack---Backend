@@ -12,7 +12,7 @@ export class FileUploadService {
     private readonly fileUpLoadRepository: FileUpLoadRepository,
   ) {}
 
-  async uploadImage(file: Express.Multer.File, Id: any) {
+  async uploadImage(file: Express.Multer.File, Id: string) {
     const user = await this.usersRepository.findOneBy({ id: Id });
 
     if (!user) {
@@ -25,8 +25,7 @@ export class FileUploadService {
       Image_Profile: uploadResponse.url,
     });
 
-    return await this.usersRepository.findOneBy({
-      id: Id,
-    });
+    return await this.usersRepository.findOneBy({ id: Id });
   }
 }
+
