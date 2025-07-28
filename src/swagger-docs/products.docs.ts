@@ -67,7 +67,7 @@ export const GetProductsDoc = () =>
       },
     }),
     ApiInternalServerErrorResponse({
-      description: "Error interno del servidor",
+      description: "Error interno del servidorr",
       content: {
         "application/json": {
           example: {
