@@ -16,7 +16,7 @@ import { ReorderProviderPicturesDTO } from "../modules/providers/dtos/reorder-pr
 export const CreateProviderPictureDoc = () =>
   applyDecorators(
     ApiOperation({
-      summary: "Crea una nueva imagen para un proveedorr",
+      summary: "Crea una nueva imagen para un proveedor",
       description: "Crea una nueva imagen asociada a un proveedor específico.",
     }),
     ApiParam({

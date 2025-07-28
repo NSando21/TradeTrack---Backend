@@ -67,7 +67,7 @@ export const GetProductsDoc = () =>
       },
     }),
     ApiInternalServerErrorResponse({
-      description: "Error interno del servidorr",
+      description: "Error interno del servidor",
       content: {
         "application/json": {
           example: {
@@ -117,7 +117,7 @@ export const GetProductsByStateDoc = () =>
           state: "pending",
           desactivated: false,
           created_at: "2025-07-25T02:05:39.994Z",
-          updated_at: "2025-07-25T02:05:38.994Z",
+          updated_at: "2025-07-25T02:05:39.994Z",
           tripId: "4f4aea9b-1c7b-4598-9d69-2b1db8a35462",
           is_active: true,
           userId: "91c7e3db-455b-4058-a6ca-196871f086cd",
