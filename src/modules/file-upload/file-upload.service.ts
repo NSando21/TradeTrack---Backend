@@ -1,9 +1,8 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
 import { FileUpLoadRepository } from './file.upload.repository';
 import { User } from '../users/user.entity';
-
+import { Repository } from 'typeorm/repository/Repository';
 @Injectable()
 export class FileUploadService {
   constructor(
