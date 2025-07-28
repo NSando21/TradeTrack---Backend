@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     
-    "types": ["node","express", "multer"],
+    "types": ["node", "multer"],
     "typeRoots": ["./node_modules/@types"],
     "module": "commonjs",
     "declaration": true,
