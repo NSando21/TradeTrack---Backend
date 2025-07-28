@@ -4,7 +4,7 @@
   "description": "Backend API con NestJS",
   "main": "dist/main.js",
   "scripts": {
-    "build": "npm install && tsc && npm run copy:templates",
+    "build": "npm ci && tsc && npm run copy:templates",
     "copy:templates": "xcopy src\\templates dist\\templates /E /I /Y",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "node dist/main.js",
