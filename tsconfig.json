@@ -1,6 +1,8 @@
 {
   "compilerOptions": {
+    
     "types": ["node", "express", "multer"],
+    "typeRoots": ["./node_modules/@types"],
     "module": "commonjs",
     "declaration": true,
     "removeComments": true,
