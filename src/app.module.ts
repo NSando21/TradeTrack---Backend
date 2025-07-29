@@ -37,7 +37,7 @@ import { AuthModule } from './modules/auth/auth.module';
         const from = configService.get<string>('MAIL_FROM');
 
         console.log('Configuración Mailer:');
-        console.log({ host, port, secure, user, pass: pass ? '*****' : undefined, from });
+        console.log({ host, port, secure, user, pass: pass ? '****' : undefined, from });
 
         if (!host || !port || !user || !pass) {
           throw new Error('Faltan variables de entorno necesarias para configurar el Mailer.');
