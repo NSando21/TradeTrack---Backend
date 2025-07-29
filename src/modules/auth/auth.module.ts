@@ -31,16 +31,16 @@ import { EmailService } from "./email.service";
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
         transport: {
-          host: configService.get<string>("SMTP_HOST"),
-          port: configService.get<number>("SMTP_PORT"),
-          secure: configService.get<number>("SMTP_PORT") === 465, // TLS solo en puerto 465
+          host: configService.get<string>("MAIL_HOST"),
+          port: configService.get<number>("MAIL_PORT"),
+          secure: configService.get<number>("MAIL_PORT") === 587, // TLS solo en puerto 465
           auth: {
-            user: configService.get<string>("SMTP_USER"),
-            pass: configService.get<string>("SMTP_PASS"),
+            user: configService.get<string>("MAIL_USER"),
+            pass: configService.get<string>("MAIL_PASS"),
           },
         },
         defaults: {
-          from: `"Backend-PI" <${configService.get<string>("SMTP_USER")}>`,
+          from: `"Backend-PI" <${configService.get<string>("MAIL_USER")}>`,
         },
         template: {
           dir: join(__dirname, "..", "..", "templates"),
