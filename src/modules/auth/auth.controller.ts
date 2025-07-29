@@ -20,6 +20,7 @@ import {
   TestAuth0Doc,
   Auth0StatusDoc,
 } from "../../swagger-docs/auth.docs";
+import { HttpCode, HttpStatus } from '@nestjs/common';
 
 @ApiTags("auth")
 @ApiExtraModels(User)
@@ -34,6 +35,7 @@ export class AuthController {
   }
 
   @Post("login")
+  @HttpCode(HttpStatus.OK)
   @LoginDoc()
   async login(@Body() loginDto: LoginUserDto) {
     return this.authService.login(loginDto);
