@@ -38,10 +38,22 @@ import { AuthModule } from './modules/auth/auth.module';
 
         console.log('Configuración Mailer:');
         console.log({ host, port, secure, user, pass: pass ? '****' : undefined, from });
-
-        if (!host || !port || !user || !pass) {
-          throw new Error('Faltan variables de entorno necesarias para configurar el Mailer.');
+        if (!host) {
+          throw new Error(`Falta la variable MAIL_HOST. Valor actual: ${host ?? 'undefined'}`);
         }
+        
+        if (!port) {
+          throw new Error(`Falta la variable MAIL_PORT. Valor actual: ${port ?? 'undefined'}`);
+        }
+        
+        if (!user) {
+          throw new Error(`Falta la variable MAIL_USER. Valor actual: ${user ?? 'undefined'}`);
+        }
+        
+        if (!pass) {
+          throw new Error(`Falta la variable MAIL_PASS. Valor actual: ${pass ?? 'undefined'}`);
+        }
+        
 
         return {
           transport: {
