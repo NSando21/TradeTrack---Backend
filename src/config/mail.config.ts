@@ -16,10 +16,10 @@ export const mailConfig: MailerOptions = {
     from: `"Backend-PI" <${process.env.MAIL_USER}>`,
   },
   template: {
-    dir: join(__dirname, '../templates'),
+    dir: join(__dirname, 'templates', 'email'),
     adapter: new HandlebarsAdapter(),
     options: {
       strict: true,
     },
-  },
+  }
 }; 
