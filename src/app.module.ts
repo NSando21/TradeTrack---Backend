@@ -12,6 +12,7 @@ import { TripsModule } from "./modules/trips/trips.module";
 import { ProviderModule } from "./modules/providers/providers.module";
 import { ProductsModule } from "./products/products.module";
 import { AuthModule } from './modules/auth/auth.module';
+import { join } from 'path';
 
 @Module({
   imports: [
@@ -35,7 +36,7 @@ import { AuthModule } from './modules/auth/auth.module';
         const user = configService.get<string>('MAIL_USER');
         const pass = configService.get<string>('MAIL_PASS');
         const from = configService.get<string>('MAIL_FROM');
-        
+
         console.log('Configuración Mailer:');
         console.log({ host, port, secure, user, pass: pass ? '****' : undefined, from });
         
@@ -64,7 +65,7 @@ import { AuthModule } from './modules/auth/auth.module';
             from: `"No Reply" <${from}>`,
           },
           template: {
-            dir: './templates/email',
+            dir: join(__dirname, '..', 'templates', 'email'),
             adapter: new HandlebarsAdapter(),
             options: {
               strict: true,
