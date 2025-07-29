@@ -35,25 +35,20 @@ import { AuthModule } from './modules/auth/auth.module';
         const user = configService.get<string>('MAIL_USER');
         const pass = configService.get<string>('MAIL_PASS');
         const from = configService.get<string>('MAIL_FROM');
-
+        
         console.log('Configuración Mailer:');
         console.log({ host, port, secure, user, pass: pass ? '****' : undefined, from });
-        if (!host) {
-          throw new Error(`Falta la variable MAIL_HOST. Valor actual: ${host ?? 'undefined'}`);
-        }
         
-        if (!port) {
-          throw new Error(`Falta la variable MAIL_PORT. Valor actual: ${port ?? 'undefined'}`);
-        }
+        const errores: string[] = [];
         
-        if (!user) {
-          throw new Error(`Falta la variable MAIL_USER. Valor actual: ${user ?? 'undefined'}`);
-        }
+        if (!host) errores.push(`Falta la variable MAIL_HOST. Valor actual: ${host ?? 'undefined'}`);
+        if (!port) errores.push(`Falta la variable MAIL_PORT. Valor actual: ${port ?? 'undefined'}`);
+        if (!user) errores.push(`Falta la variable MAIL_USER. Valor actual: ${user ?? 'undefined'}`);
+        if (!pass) errores.push(`Falta la variable MAIL_PASS. Valor actual: ${pass ?? 'undefined'}`);
         
-        if (!pass) {
-          throw new Error(`Falta la variable MAIL_PASS. Valor actual: ${pass ?? 'undefined'}`);
+        if (errores.length > 0) {
+          throw new Error(errores.join('\n'));
         }
-        
 
         return {
           transport: {
