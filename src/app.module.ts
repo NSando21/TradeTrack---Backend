@@ -65,7 +65,7 @@ import { join } from 'path';
             from: `"No Reply" <${from}>`,
           },
           template: {
-            dir: join(__dirname, '..', 'templates', 'email'),
+            dir: join(__dirname, 'templates', 'email'),
             adapter: new HandlebarsAdapter(),
             options: {
               strict: true,
