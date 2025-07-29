@@ -2,6 +2,10 @@ import { Module } from "@nestjs/common";
 import { JwtModule } from "@nestjs/jwt";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import { PassportModule } from "@nestjs/passport";
+import { MailerModule } from "@nestjs-modules/mailer";
+import { HandlebarsAdapter } from "@nestjs-modules/mailer/dist/adapters/handlebars.adapter";
+import { join } from "path";
+
 import { AuthService } from "./auth.service";
 import { AuthController } from "./auth.controller";
 import { UsersModule } from "../users/users.module";
@@ -11,6 +15,7 @@ import { EmailService } from "./email.service";
 
 @Module({
   imports: [
+    ConfigModule,
     UsersModule,
     PassportModule,
     JwtModule.registerAsync({
@@ -19,6 +24,31 @@ import { EmailService } from "./email.service";
       useFactory: (configService: ConfigService) => ({
         secret: configService.get<string>("JWT_SECRET"),
         signOptions: { expiresIn: "1d" },
+      }),
+    }),
+    MailerModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => ({
+        transport: {
+          host: configService.get<string>("SMTP_HOST"),
+          port: configService.get<number>("SMTP_PORT"),
+          secure: configService.get<number>("SMTP_PORT") === 465, // TLS solo en puerto 465
+          auth: {
+            user: configService.get<string>("SMTP_USER"),
+            pass: configService.get<string>("SMTP_PASS"),
+          },
+        },
+        defaults: {
+          from: `"Backend-PI" <${configService.get<string>("SMTP_USER")}>`,
+        },
+        template: {
+          dir: join(__dirname, "..", "..", "templates"),
+          adapter: new HandlebarsAdapter(),
+          options: {
+            strict: true,
+          },
+        },
       }),
     }),
   ],

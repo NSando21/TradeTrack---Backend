@@ -41,6 +41,7 @@ async function bootstrap() {
 
   console.log(`🚀 Aplicación ejecutándose en: http://localhost:${port}`);
   console.log(`📚 Documentación API: http://localhost:${port}/api`);
+  console.log(`🌍Servidor corriendo en ${process.env.NODE_ENV} en el puerto ${process.env.PORT}`);
 }
 
 bootstrap();

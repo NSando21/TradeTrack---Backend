@@ -18,7 +18,7 @@ import { AuthModule } from './modules/auth/auth.module';
     // Configuración de variables de entorno
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: ".env.development",
+      envFilePath: process.env.NODE_ENV === 'production' ? '.env.production' : '.env.development',
     }),
 
     // Configuración de base de datos
