@@ -1,3 +1,4 @@
+# Konichiwa
 # Backend PI - API con NestJS
 
 Backend API construido con NestJS, TypeScript y PostgreSQL.
