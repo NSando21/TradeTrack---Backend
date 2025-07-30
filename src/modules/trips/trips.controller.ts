@@ -1,3 +1,4 @@
+// trips.controller.ts
 import {
   Controller,
   Get,
@@ -7,6 +8,7 @@ import {
   UseGuards,
   Req,
   Patch,
+  Query, // ← Agregar esta importación
 } from "@nestjs/common";
 import { TripsService } from "./trips.service";
 import { CreateTripDTO } from "./dtos/trip.dto";
@@ -56,15 +58,16 @@ export class TripsController {
   @UseGuards(MultiAuthGuard, RolesGuard)
   @ApiBearerAuth()
   @GetTripsDoc()
-  async getTrips() {
-    return await this.tripsService.getTrips();
+  async getTrips(
+    @Query("page") page?: string,
+    @Query("limit") limit?: string
+  ) {
+    // Valores por defecto si no se proporcionan
+    const pageNum = page ? +page : 1;
+    const limitNum = limit ? +limit : 7;
+    
+    return await this.tripsService.getTrips(pageNum, limitNum);
   }
-  // async getTrips(@Query("page") page: string, @Query("limit") limit: string) {
-  //   if (page && limit) {
-  //     return this.tripsService.getTrips(+page, +limit);
-  //   }
-  //   return this.tripsService.getTrips(1, 7);
-  // }
 
   @Get(":tripId/providers")
   @UseGuards(MultiAuthGuard)

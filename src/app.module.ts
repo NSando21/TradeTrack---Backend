@@ -1,3 +1,4 @@
+// src/app.module.ts
 import { Module } from "@nestjs/common";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import { TypeOrmModule } from "@nestjs/typeorm";
@@ -13,6 +14,9 @@ import { ProviderModule } from "./modules/providers/providers.module";
 import { ProductsModule } from "./products/products.module";
 import { AuthModule } from './modules/auth/auth.module';
 import { join } from 'path';
+import { NotificationsGateway } from './modules/notifications/notifications.gateway';
+import { FileUploadModule } from "./modules/file-upload/file-upload.module";
+import { NotificationsModule } from "./modules/notifications/notifications.module";
 
 @Module({
   imports: [
@@ -81,8 +85,10 @@ import { join } from 'path';
     ProviderModule,
     ProductsModule,
     AuthModule,
+    FileUploadModule,
+    NotificationsModule
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, NotificationsGateway],
 })
 export class AppModule {}

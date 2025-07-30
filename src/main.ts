@@ -1,3 +1,4 @@
+// src/main.ts
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
@@ -25,7 +26,7 @@ async function bootstrap() {
   });
 
   // Configurar prefijo global para las rutas
-  //app.setGlobalPrefix('api');
+  app.setGlobalPrefix('api');
 
   // Configurar validación global
   app.useGlobalPipes(

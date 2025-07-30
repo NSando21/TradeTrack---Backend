@@ -12,11 +12,15 @@ import { UsersModule } from "../users/users.module";
 import { Auth0Strategy } from "./auth0.strategy";
 import { JwtStrategy } from "./jwt.strategy";
 import { EmailService } from "./email.service";
+import { TripsModule } from "../trips/trips.module";
+import { NotificationsModule } from "../notifications/notifications.module";
 
 @Module({
   imports: [
     ConfigModule,
     UsersModule,
+    TripsModule,
+    NotificationsModule,
     PassportModule,
     JwtModule.registerAsync({
       imports: [ConfigModule],
