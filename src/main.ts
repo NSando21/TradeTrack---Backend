@@ -26,7 +26,7 @@ async function bootstrap() {
   });
 
   // Configurar prefijo global para las rutas
-  app.setGlobalPrefix('api');
+ //app.setGlobalPrefix('api');
 
   // Configurar validación global
   app.useGlobalPipes(
