@@ -9,8 +9,8 @@ import {
   JoinColumn,
 } from "typeorm";
 import { ProviderPicture } from "../Entities/provider-pictures.entity";
-import { Trip } from "@/modules/trips/trip.entity";
-import { User } from "@/modules/users/user.entity";
+import { Trip } from "../../trips/trip.entity";
+import { User } from "../../users/user.entity";
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 
 @Entity("providers")

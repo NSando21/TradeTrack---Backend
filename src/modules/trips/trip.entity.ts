@@ -1,3 +1,4 @@
+// src/modules/trips/trip.entity.ts
 import {
   Column,
   CreateDateColumn,

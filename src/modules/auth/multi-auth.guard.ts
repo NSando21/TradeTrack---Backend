@@ -4,7 +4,7 @@ import {
   UnauthorizedException,
 } from "@nestjs/common";
 import { AuthGuard } from "@nestjs/passport";
-import { Role } from "src/roles.enum";
+import { Role } from "../../roles.enum";
 
 @Injectable()
 export class MultiAuthGuard extends AuthGuard(["jwt", "auth0"]) {

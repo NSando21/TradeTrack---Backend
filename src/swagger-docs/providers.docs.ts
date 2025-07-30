@@ -1,5 +1,5 @@
-import { UpdateProviderDTO } from "@/modules/providers/dtos/update-provider.dto";
-import { Provider } from "@/modules/providers/Entities/provider.entity";
+import { UpdateProviderDTO } from "../modules/providers/dtos/update-provider.dto";
+import { Provider } from "../modules/providers/Entities/provider.entity";
 import { applyDecorators } from "@nestjs/common";
 import {
   ApiOperation,

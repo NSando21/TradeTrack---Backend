@@ -1,3 +1,4 @@
+// src/modules/auth/auth.service.ts
 import {
   Injectable,
   UnauthorizedException,
@@ -77,10 +78,10 @@ export class AuthService {
 
       try {
     const viajeProximo = await this.tripsService.getViajeProximo(user.id);
-    if (viajeProximo) {
-      const mensaje = `¡Tienes un viaje próximo el ${viajeProximo.date}! ✈️`;
-      this.notificationsGateway.notifyUser(user.id, mensaje);
-    }
+    // if (viajeProximo) {
+    //   const mensaje = `¡Tienes un viaje próximo el ${viajeProximo.date}! ✈️`;
+    //   this.notificationsGateway.notifyUser(user.id, mensaje);
+    // }
   } catch (error) {
     console.error("Error buscando viaje próximo:", error);
   }

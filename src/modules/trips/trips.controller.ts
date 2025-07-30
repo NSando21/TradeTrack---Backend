@@ -1,3 +1,4 @@
+// trips.controller.ts
 import {
   Controller,
   Get,
@@ -7,15 +8,16 @@ import {
   UseGuards,
   Req,
   Patch,
+  Query, // ← Agregar esta importación
 } from "@nestjs/common";
 import { TripsService } from "./trips.service";
 import { CreateTripDTO } from "./dtos/trip.dto";
 import { CreateProviderDTO } from "../providers/dtos/create-provider.dto";
-import { CreateProductDto } from "@/products/dto/create-product.dto";
+import { CreateProductDto } from "../../products/dto/create-product.dto";
 import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
 import { MultiAuthGuard } from "../auth/multi-auth.guard";
-import { Roles } from "@/decorators/roles.decorator";
-import { Role } from "@/roles.enum";
+import { Roles } from "../../decorators/roles.decorator";
+import { Role } from "../../roles.enum";
 import { RolesGuard } from "../auth/roles.guard";
 import { UpdateTripDTO } from "./dtos/update-trip.dto";
 import {
@@ -28,7 +30,7 @@ import {
   GetTripByUserIdDoc,
   GetTripsDoc,
   UpdateTripByTripIdDoc,
-} from "@/swagger-docs/trips.docs";
+} from "../../swagger-docs/trips.docs";
 
 @ApiTags("Trips")
 @Controller("trips")
@@ -56,15 +58,16 @@ export class TripsController {
   @UseGuards(MultiAuthGuard, RolesGuard)
   @ApiBearerAuth()
   @GetTripsDoc()
-  async getTrips() {
-    return await this.tripsService.getTrips();
+  async getTrips(
+    @Query("page") page?: string,
+    @Query("limit") limit?: string
+  ) {
+    // Valores por defecto si no se proporcionan
+    const pageNum = page ? +page : 1;
+    const limitNum = limit ? +limit : 7;
+    
+    return await this.tripsService.getTrips(pageNum, limitNum);
   }
-  // async getTrips(@Query("page") page: string, @Query("limit") limit: string) {
-  //   if (page && limit) {
-  //     return this.tripsService.getTrips(+page, +limit);
-  //   }
-  //   return this.tripsService.getTrips(1, 7);
-  // }
 
   @Get(":tripId/providers")
   @UseGuards(MultiAuthGuard)

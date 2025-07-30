@@ -17,7 +17,7 @@ import {
   GetProviderPicturesByProviderIdDoc,
   DeleteProviderPictureDoc,
   ReorderProviderPicturesDoc,
-} from "@/swagger-docs/providers-pictures.docs";
+} from "../../swagger-docs/providers-pictures.docs";
 
 @ApiTags("Provider Pictures")
 @Controller("provider-pictures")

@@ -19,7 +19,7 @@ import {
   DeleteProviderByIdDoc,
   ReactivateProviderByIdDoc,
   GetProvidersByUserDoc,
-} from "@/swagger-docs/providers.docs";
+} from "../../swagger-docs/providers.docs";
 
 @ApiTags("Providers")
 @Controller("providers")

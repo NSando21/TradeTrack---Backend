@@ -9,7 +9,7 @@ import {
   ApiBody,
   ApiResponse,
 } from "@nestjs/swagger";
-import { User } from "@/modules/users/user.entity";
+import { User } from "../modules/users/user.entity";
 
 // Obtener todos los usuarios
 export const GetAllUsersDoc = () =>

@@ -8,8 +8,8 @@ import {
   ApiBadRequestResponse,
   ApiBearerAuth,
 } from "@nestjs/swagger";
-import { RegisterUserDto } from "@/modules/auth/dto/register-user.dto";
-import { LoginUserDto } from "@/modules/auth/dto/login-user.dto";
+import { RegisterUserDto } from "../modules/auth/dto/register-user.dto";
+import { LoginUserDto } from "../modules/auth/dto/login-user.dto";
 
 // Registro de usuario
 export const RegisterDoc = () =>

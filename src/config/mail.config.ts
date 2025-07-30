@@ -13,13 +13,13 @@ export const mailConfig: MailerOptions = {
     },
   },
   defaults: {
-    from: `"Backend-PI" <${process.env.MAIL_USER}>`,
+    from: '"No Reply" <noreply@example.com>',
   },
   template: {
-    dir: join(__dirname, '../templates'),
+    dir: join(__dirname, 'templates', 'email'),
     adapter: new HandlebarsAdapter(),
     options: {
       strict: true,
     },
   },
-}; 
+};

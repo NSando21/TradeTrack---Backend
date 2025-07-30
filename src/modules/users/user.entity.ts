@@ -7,7 +7,7 @@ import {
   OneToMany,
 } from "typeorm";
 import { Trip } from "../trips/trip.entity";
-import { Product } from "@/products/entities/product.entity";
+import { Product } from "../../products/entities/product.entity";
 import { Provider } from "../providers/Entities/provider.entity";
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 

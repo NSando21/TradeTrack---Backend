@@ -1,3 +1,4 @@
+// src/modules/trips/trips.service.ts
 import {
   BadRequestException,
   Injectable,
@@ -5,10 +6,9 @@ import {
   UnauthorizedException,
 } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Between, MoreThan, Repository } from "typeorm";
+import { Between, Repository } from "typeorm";
 import { Trip } from "./trip.entity";
 import { CreateTripDTO } from "./dtos/trip.dto";
-import { LessThanOrEqual } from "typeorm";
 import { Provider } from "../providers/Entities/provider.entity";
 import { CreateProviderDTO } from "../providers/dtos/create-provider.dto";
 import { ProviderPicture } from "../providers/Entities/provider-pictures.entity";
@@ -17,7 +17,6 @@ import { Product } from "@/products/entities/product.entity";
 import { User } from "../users/user.entity";
 import { UpdateTripDTO } from "./dtos/update-trip.dto";
 import { NotificationsGateway } from "../notifications/notifications.gateway";
-import { ProductPicture } from "@/products/entities/product-pictures.entity";
 
 @Injectable()
 export class TripsService {
@@ -32,9 +31,7 @@ export class TripsService {
     @InjectRepository(User)
     private readonly usersRepository: Repository<User>,
     @InjectRepository(Product)
-    private readonly productsRepository: Repository<Product>,
-    @InjectRepository(ProductPicture)
-    private readonly productsPicturesRepository: Repository<ProductPicture>
+    private readonly productsRepository: Repository<Product>
   ) {}
 
   async findAll(userId: string): Promise<Trip[]> {
@@ -48,23 +45,18 @@ export class TripsService {
     });
   }
 
-  async getTrips(): Promise<Trip[]> {
-    return await this.tripsRepository.find({
-      order: { createdAt: "DESC" },
-    });
+  async getTrips(page: number, limit: number): Promise<Trip[]> {
+    let trips = await this.tripsRepository.find();
+
+    const start = (page - 1) * limit;
+    const end = start + limit;
+
+    trips = trips.slice(start, end);
+
+    return trips;
   }
-  // async getTrips(page: number, limit: number): Promise<Trip[]> {
-  //   let trips = await this.tripsRepository.find();
 
-  //   const start = (page - 1) * limit;
-  //   const end = start + limit;
-
-  //   trips = trips.slice(start, end);
-
-  //   return trips;
-  // }
-
-  async findAllProvidersById(tripId: string): Promise<Provider[]> {
+  async findAllProvidersById(tripId: string) {
     const findTrip = await this.tripsRepository.findOneBy({
       id: tripId,
     });
@@ -76,7 +68,7 @@ export class TripsService {
     });
   }
 
-  async findAllProductsById(tripId: string): Promise<Product[]> {
+  async findAllProductsById(tripId: string) {
     const findTrip = await this.tripsRepository.findOneBy({
       id: tripId,
     });
@@ -92,7 +84,7 @@ export class TripsService {
     tripId: string,
     createProductDto: CreateProductDto,
     userId: string
-  ): Promise<Trip> {
+  ) {
     if (!userId) {
       throw new UnauthorizedException(
         "The authenticated user could not be determined"
@@ -103,30 +95,24 @@ export class TripsService {
 
     if (!findTrip) throw new NotFoundException("Trip not found");
 
-    const { pictures, ...productData } = createProductDto;
-
     const newProduct = this.productsRepository.create({
-      ...productData,
+      ...createProductDto,
       trip: findTrip,
-      user: { id: userId }, // ← Vincula el producto con el usuario
+      user: { id: userId },
     });
 
     const savedProduct = await this.productsRepository.save(newProduct);
 
-    if (pictures && pictures.length > 0) {
-      const pictureEntities = pictures.map((pic) =>
-        this.productsPicturesRepository.create({
-          ...pic,
-          product: savedProduct,
-        })
-      );
-
-      await this.productsPicturesRepository.save(pictureEntities);
-    }
+    // 🔔 NOTIFICACIÓN PARA PRODUCTO CREADO
+    console.log('📦 Emitiendo notificación para nuevo producto:', savedProduct.name);
+    this.notificationsGateway.notifyUser(
+      userId,
+      `Nuevo producto agregado: ${savedProduct.name} en el viaje ${findTrip.name}`
+    );
 
     return await this.tripsRepository.findOne({
       where: { id: tripId },
-      relations: { products: { pictures: true } },
+      relations: { products: true },
     });
   }
 
@@ -134,7 +120,7 @@ export class TripsService {
     tripId: string,
     createProviderDto: CreateProviderDTO,
     userId: string
-  ): Promise<Trip> {
+  ) {
     const findTrip = await this.tripsRepository.findOneBy({
       id: tripId,
     });
@@ -171,6 +157,13 @@ export class TripsService {
       await this.providersPicturesRepository.save(pictureEntities);
     }
 
+    // 🔔 NOTIFICACIÓN PARA PROVEEDOR CREADO  
+    console.log('🏢 Emitiendo notificación para nuevo proveedor:', savedProvider.name);
+    this.notificationsGateway.notifyUser(
+      userId,
+      `Nuevo proveedor agregado: ${savedProvider.name} en el viaje ${findTrip.name}`
+    );
+
     return await this.tripsRepository.findOne({
       where: { id: tripId },
       relations: { providers: { pictures: true } },
@@ -198,13 +191,19 @@ export class TripsService {
       user: findUser,
     });
 
-    return await this.tripsRepository.save(trip);
+    const savedTrip = await this.tripsRepository.save(trip);
+
+    // 🔔 NOTIFICACIÓN PARA VIAJE CREADO
+    // console.log('✈️ Emitiendo notificación para nuevo viaje:', savedTrip.name);
+    // this.notificationsGateway.notifyUser(
+    //   userId,
+    //   `Viaje: ${savedTrip.name}`
+    // );
+
+    return savedTrip;
   }
 
-  async updateTrip(
-    tripId: string,
-    updateTripDto: Partial<UpdateTripDTO>
-  ): Promise<Trip> {
+  async updateTrip(tripId: string, updateTripDto: UpdateTripDTO) {
     const findTrip = await this.tripsRepository.findOne({
       where: { id: tripId },
       relations: ["user"],
@@ -225,20 +224,30 @@ export class TripsService {
       }
     }
 
-    Object.assign(findTrip, updateTripDto);
+    const updatedTrip = {
+      ...findTrip,
+      ...updateTripDto,
+      date: updateTripDto.date ? new Date(updateTripDto.date) : findTrip.date,
+      updatedAt: new Date(),
+    };
 
-    if (updateTripDto.date) {
-      findTrip.date = new Date(updateTripDto.date);
-    }
+    await this.tripsRepository.update(tripId, updatedTrip);
 
-    findTrip.updatedAt = new Date();
+    const savedTrip = await this.tripsRepository.findOneBy({
+      id: tripId,
+    });
 
-    await this.tripsRepository.save(findTrip);
+    // 🔔 NOTIFICACIÓN PARA VIAJE ACTUALIZADO
+    console.log('🔄 Emitiendo notificación para viaje actualizado:', savedTrip.name);
+    this.notificationsGateway.notifyUser(
+      findTrip.user.id,
+      `Viaje actualizado: ${savedTrip.name}`
+    );
 
-    return findTrip;
+    return savedTrip;
   }
 
-  async findById(tripId: string): Promise<Trip> {
+  async findById(tripId: string) {
     const trip = await this.tripsRepository.findOne({
       where: { id: tripId },
       relations: { products: true, providers: true },
@@ -248,11 +257,11 @@ export class TripsService {
   }
 
   async getViajeProximo(userId: string) {
-    const now = new Date ();
+    const now = new Date();
     const tresDiasDespues = new Date();
     tresDiasDespues.setDate(tresDiasDespues.getDate() + 3);
 
-    return await this.tripsRepository.findOne({
+    const viajeProximo = await this.tripsRepository.findOne({
       where: {
         user: { id: userId },
         date: Between(now, tresDiasDespues),
@@ -260,6 +269,22 @@ export class TripsService {
       order: {
         date: "ASC",
       },
-    },);
+    });
+
+    // 🔔 NOTIFICACIÓN PARA VIAJE PRÓXIMO (si existe)
+  if (viajeProximo) {
+  const viajeDate = new Date(viajeProximo.date); // Convertimos a Date
+  const diasRestantes = Math.ceil((viajeDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
+  console.log('⏰ Emitiendo notificación para viaje próximo:', viajeProximo.name);
+  console.log("🧪 viajeProximo:", viajeProximo);
+  
+  this.notificationsGateway.notifyUser(
+    userId,
+    `¡Recordatorio! Tu viaje "${viajeProximo.name}"  es en menos de 3 días, prepárate!`
+  );
+}
+
+return viajeProximo;
+
   }
 }
