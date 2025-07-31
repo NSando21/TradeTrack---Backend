@@ -64,7 +64,7 @@ export class PaymentsService {
             transaction_amount: dto.transaction_amount, // Monto en centavos
             currency_id: 'COP', // Moneda (Pesos Colombianos)
           },
-          back_url: 'https://cant-place-prison-warning.trycloudflare.com/suscripcion/exito', // URL de retorno después del pago
+          back_url: process.env.MERCADOPAGO_BACK_URL, // URL de retorno después del pago
           status: 'pending' // Estado inicial de la suscripción
         }
       });
