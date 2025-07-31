@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Test Notificaciones</title>
+  <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+</head>
+<body>
+  <h1>Cliente de prueba</h1>
+  <script>
+    const socket = io("http://localhost:3001"); 
+
+    socket.on("connect", () => {
+      console.log("Conectado con id:", socket.id);
+      socket.emit("register", { userId: "0eb07dbf-299e-4bb6-9c60-d687afa7c709" }); 
+    });
+
+    socket.on("notificacion", (payload) => {
+      console.log("📩 Notificación recibida:", payload);
+      alert("📩 Notificación: " + payload.mensaje);
+    });
+  </script>
+</body>
+</html>

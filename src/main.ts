@@ -1,3 +1,4 @@
+// src/main.ts
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
@@ -25,7 +26,7 @@ async function bootstrap() {
   });
 
   // Configurar prefijo global para las rutas
-  //app.setGlobalPrefix('api');
+ //app.setGlobalPrefix('api');
 
   // Configurar validación global
   app.useGlobalPipes(
@@ -41,6 +42,7 @@ async function bootstrap() {
 
   console.log(`🚀 Aplicación ejecutándose en: http://localhost:${port}`);
   console.log(`📚 Documentación API: http://localhost:${port}/api`);
+  console.log(`🌍Servidor corriendo en ${process.env.NODE_ENV} en el puerto ${process.env.PORT}`);
 }
 
 bootstrap();
