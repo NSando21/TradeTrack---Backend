@@ -13,7 +13,7 @@ export const mailConfig: MailerOptions = {
     },
   },
   defaults: {
-    from: `"Backend-PI" <${process.env.MAIL_USER}>`,
+    from: `"TradeTrack" <${process.env.MAIL_USER}>`,
   },
   template: {
     dir: join(__dirname, '../templates'),

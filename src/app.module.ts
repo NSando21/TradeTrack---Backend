@@ -12,6 +12,7 @@ import { ProviderModule } from "./modules/providers/providers.module";
 import { ProductsModule } from "./products/products.module";
 import { PaymentsModule } from "./modules/payments/payments.module";
 import { AuthModule } from './modules/auth/auth.module';
+import { SubscriptionsModule } from './modules/subscriptions/subscriptions.module';
 
 @Module({
   imports: [
@@ -34,6 +35,7 @@ import { AuthModule } from './modules/auth/auth.module';
     ProductsModule,
     AuthModule,
     PaymentsModule,
+    SubscriptionsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

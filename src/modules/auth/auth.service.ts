@@ -9,13 +9,15 @@ import { RegisterUserDto } from "./dto/register-user.dto";
 import { LoginUserDto } from "./dto/login-user.dto";
 import * as bcrypt from "bcryptjs";
 import { EmailService } from "./email.service";
+import { SubscriptionsService } from "../subscriptions/subscriptions.service";
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly usersService: UsersService,
     private readonly jwtService: JwtService,
-    private readonly emailService: EmailService
+    private readonly emailService: EmailService,
+    private readonly subscriptionsService: SubscriptionsService
   ) {}
 
   async register(registerDto: RegisterUserDto) {
@@ -30,6 +32,16 @@ export class AuthService {
       ...registerDto,
       password: hashedPassword,
     });
+
+    // Crear suscripción de bienvenida automática
+    console.log("🔄 Intentando crear suscripción de bienvenida para usuario:", user.id);
+    try {
+      const subscription = await this.subscriptionsService.createWelcomeSubscription(user.id, user.email);
+      console.log("✅ Suscripción de bienvenida creada exitosamente:", subscription.id);
+    } catch (error) {
+      console.error("❌ Error creando suscripción de bienvenida:", error);
+      // No lanzamos error para no interrumpir el registro
+    }
 
     // Enviar email de bienvenida
     try {
