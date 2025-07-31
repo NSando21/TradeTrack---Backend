@@ -13,7 +13,6 @@ export const mailConfig: MailerOptions = {
     },
   },
   defaults: {
-    from: `"TradeTrack" <${process.env.MAIL_USER}>`,
     from: '"No Reply" <noreply@example.com>',
   },
   template: {

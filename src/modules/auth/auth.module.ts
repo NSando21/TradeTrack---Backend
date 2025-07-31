@@ -14,17 +14,7 @@ import { JwtStrategy } from "./jwt.strategy";
 import { EmailService } from "./email.service";
 import { TripsModule } from "../trips/trips.module";
 import { NotificationsModule } from "../notifications/notifications.module";
-import { Module } from '@nestjs/common';
-import { JwtModule } from '@nestjs/jwt';
-import { ConfigModule, ConfigService } from '@nestjs/config';
-import { PassportModule } from '@nestjs/passport';
-import { AuthService } from './auth.service';
-import { AuthController } from './auth.controller';
-import { UsersModule } from '../users/users.module';
 import { SubscriptionsModule } from '../subscriptions/subscriptions.module';
-import { Auth0Strategy } from './auth0.strategy';
-import { JwtStrategy } from './jwt.strategy';
-import { EmailService } from './email.service';
 
 @Module({
   imports: [
