@@ -105,4 +105,73 @@ export class AuthService {
       user: userWithoutPassword,
     };
   }
+
+  /**
+   * Maneja el login de usuarios de Auth0 (Google, etc.)
+   * 
+   * Este método se llama cuando un usuario se autentica por primera vez
+   * a través de Auth0. Verifica si el usuario existe y crea una suscripción
+   * de bienvenida si es la primera vez que se conecta.
+   * 
+   * @param auth0User - Datos del usuario de Auth0
+   * @returns Token JWT y datos del usuario
+   */
+  async handleAuth0Login(auth0User: any) {
+    try {
+      // Buscar usuario por email (Auth0 siempre proporciona email)
+      let user = await this.usersService.findByEmail(auth0User.email);
+      
+      if (!user) {
+        // Usuario nuevo de Auth0 - crearlo
+        console.log("🆕 Creando nuevo usuario de Auth0:", auth0User.email);
+        
+        user = await this.usersService.create({
+          username: auth0User.email.split('@')[0], // Usar parte del email como username
+          email: auth0User.email,
+          password: '', // Auth0 maneja la autenticación
+          admin: false,
+        });
+
+        // Crear suscripción de bienvenida para usuario nuevo de Auth0
+        console.log("🔄 Creando suscripción de bienvenida para usuario Auth0:", user.id);
+        try {
+          const subscription = await this.subscriptionsService.createWelcomeSubscription(user.id, user.email);
+          console.log("✅ Suscripción de bienvenida creada para Auth0:", subscription.id);
+        } catch (error) {
+          console.error("❌ Error creando suscripción de bienvenida para Auth0:", error);
+        }
+
+        // Enviar email de bienvenida
+        try {
+          await this.emailService.sendWelcomeEmail({
+            username: user.username,
+            email: user.email,
+          });
+        } catch (error) {
+          console.error("Error enviando email de bienvenida para Auth0:", error);
+        }
+      } else {
+        console.log("👤 Usuario Auth0 existente:", user.email);
+      }
+
+      // Generar token JWT
+      const payload = {
+        sub: user.id,
+        username: user.username,
+        isAdmin: user.admin,
+      };
+      const token = this.jwtService.sign(payload, { expiresIn: "300h" });
+
+      // Devolver datos del usuario y token
+      const { password, ...userWithoutPassword } = user;
+      return {
+        access_token: token,
+        user: userWithoutPassword,
+      };
+
+    } catch (error) {
+      console.error("Error en handleAuth0Login:", error);
+      throw new UnauthorizedException("Error procesando login de Auth0");
+    }
+  }
 }

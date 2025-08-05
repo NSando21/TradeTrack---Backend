@@ -42,6 +42,36 @@ export class AuthController {
     return this.authService.login(loginDto);
   }
 
+  @Post("auth0-login")
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ 
+    summary: 'Login con Auth0 (Google, etc.)',
+    description: 'Maneja el login de usuarios autenticados por Auth0 y crea suscripción de bienvenida si es la primera vez'
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Login exitoso con token JWT',
+    schema: {
+      example: {
+        access_token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+        user: {
+          id: "user-id",
+          username: "usuario@email.com",
+          email: "usuario@email.com",
+          admin: false,
+          isActive: true
+        }
+      }
+    }
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Error en la autenticación'
+  })
+  async auth0Login(@Body() auth0User: { email: string; name?: string; picture?: string }) {
+    return this.authService.handleAuth0Login(auth0User);
+  }
+
   @Get("profile")
   @GetProfileDoc()
   @UseGuards(MultiAuthGuard)
