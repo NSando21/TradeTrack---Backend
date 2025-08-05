@@ -908,7 +908,7 @@ Construya TradeTrack-Backend desde la fuente e instale las dependencias:
 
 4. **Configurar variables de entorno**
    ```bash
-   # Crear archivo .env basado en .env.example
+   # Crear archivo .env basado en .config.env --> REVISA ESTE ARCHIVO
    cp .env.example .env
    ```
    
